@@ -1,0 +1,3 @@
+[submodule "bugsy_printer_files"]
+	path = bugsy_printer_files
+	url = https://github.com/sn-printer-files/bugsy_printer_files
