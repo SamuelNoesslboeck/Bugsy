@@ -1,12 +1,15 @@
 {
 	"folders": [
 		{
+			"name": "bugsy_core",
 			"path": "bugsy_core"
 		},
 		{
+			"name": "bugsy_trader",
 			"path": "bugsy_trader"
 		},
 		{
+			"name": "libs",
 			"path": "libs"
 		}
 	],
