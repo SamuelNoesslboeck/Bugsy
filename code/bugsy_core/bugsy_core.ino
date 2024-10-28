@@ -1,5 +1,8 @@
 // Local headers
-# include "commands.hpp"
+# include "bugsy.hpp"
+
+static Bugsy bugsy;
+
 
 void setup() {
     

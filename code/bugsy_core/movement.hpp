@@ -1,6 +1,6 @@
 # pragma once
 
-# include "sylo/types.hpp"
+# include "../libs/sylo/types.hpp"
 
 typedef u32 MoveDuration;
 

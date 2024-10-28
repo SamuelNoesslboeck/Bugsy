@@ -20,6 +20,16 @@ private:
     }
 
 public:
+    Bugsy(u8 pin_chain_left_fw, u8 pin_chain_left_bw, u8 pin_chain_right_fw, u8 pin_chain_right_bw) 
+        : pin_chain_left_fw(pin_chain_left_fw), pin_chain_left_bw(pin_chain_left_bw), pin_chain_right_fw(pin_chain_right_fw), pin_chain_right_bw(pin_chain_right_bw)
+    {
+        // Output pins for motor controller
+        pinMode(this->pin_chain_left_fw, OUTPUT);
+        pinMode(this->pin_chain_left_bw, OUTPUT);
+        pinMode(this->pin_chain_right_fw, OUTPUT);
+        pinMode(this->pin_chain_right_bw, OUTPUT);
+    }
+
     void issue_move(Movement move, MoveDuration duration) {
         this->queue.issue_move(move, duration);
     }

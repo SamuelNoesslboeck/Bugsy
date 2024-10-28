@@ -1,0 +1,4 @@
+{
+    "cmake.exportCompileCommandsFile": false,
+    "cmake.loadCompileCommands": false
+}

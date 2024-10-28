@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "bugsy_trader"
+		},
+		{
+			"path": "libs"
 		}
 	],
 	"settings": {
