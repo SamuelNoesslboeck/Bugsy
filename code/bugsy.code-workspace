@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "bugsy_core"
+		},
+		{
+			"path": "bugsy_trader"
+		}
+	],
+	"settings": {
+		"cmake.exportCompileCommandsFile": false,
+		"cmake.loadCompileCommands": false
+	}
+}
