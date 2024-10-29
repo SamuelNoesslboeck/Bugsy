@@ -2,7 +2,7 @@
 
 # include "../libs/sylo/types.hpp"
 
-namespace bugsy {
+namespace bugsy_core {
     typedef u32 MoveDuration;
 
     struct Movement {

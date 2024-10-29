@@ -3,7 +3,7 @@
 
 # include <Arduino.h>
 
-namespace bugsy {
+namespace bugsy_core {
     // Movement
         Movement::Movement(Direction chain_left_dir, Direction chain_right_dir, u8 chain_left_duty, u8 chain_right_duty) 
             : chain_left_dir(chain_left_dir), chain_right_dir(chain_right_dir), chain_left_duty(chain_left_duty), chain_right_duty(chain_right_duty)
