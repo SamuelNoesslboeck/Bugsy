@@ -1,0 +1,41 @@
+# pragma once
+
+// External libraries
+# include <Arduino.h>
+# include "bugsy_core.hpp"
+
+namespace bugsy_core {
+    namespace io {
+        // Serials
+        static BLEServer* BLE_SERVER = nullptr;
+        static BLEService* BLE_SERVICE = nullptr;
+        static BLECharacteristic* BLE_CHARACTER = nullptr;
+
+        static HardwareSerial* TRADER_SERIAL = &Serial1;
+        static HardwareSerial* RPI_SERIAL = &Serial2;
+
+
+        static char PARSE_BUFFER [PARSE_BUFFER_SIZE];
+
+        static void parse_cmd(SystemAddr addr, const char* buffer, size_t len);
+
+        // Events
+            static void setup();
+
+            static void handle();
+        //
+
+        // I/O
+            static void write(SystemAddr addr, const uint8_t* buffer, size_t len);
+
+            static void write_str(SystemAddr addr, const char* buffer) {
+                write(addr, (const uint8_t*)buffer, strlen(buffer) + 1);
+            }
+
+            template<typename T>
+            static void write_obj(SystemAddr addr, T* obj) {
+                write(addr, (const uint8_t*)obj, sizeof(T));
+            }
+        // 
+    }
+}

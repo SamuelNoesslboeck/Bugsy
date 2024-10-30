@@ -19,6 +19,11 @@
 	],
 	"settings": {
 		"cmake.exportCompileCommandsFile": false,
-		"cmake.loadCompileCommands": false
+		"cmake.loadCompileCommands": false,
+		"files.associations": {
+			"*.script": "lua",
+			"*.Ive-Object": "json",
+			"algorithm": "cpp"
+		}
 	}
 }
