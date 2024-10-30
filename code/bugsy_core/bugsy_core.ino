@@ -20,33 +20,33 @@ namespace bugsy_core {
             EEPROM.begin(EEPROM_SIZE);
 
             // Load values
-            EEPROM.readString(EEPROM_ADDR_WIFI_SSID, WIFI_SSID, WIFI_BUFFER_SIZE - 1);
-            WIFI_SSID[WIFI_BUFFER_SIZE - 1] = 0;
+            EEPROM.readString(EEPROM_ADDR_WIFI_SSID, wifi_ssid, WIFI_BUFFER_SIZE - 1);
+            wifi_ssid[WIFI_BUFFER_SIZE - 1] = 0;
 
-            EEPROM.readString(EEPROM_ADDR_WIFI_PWD, WIFI_PASSWORD, WIFI_BUFFER_SIZE - 1);
-            WIFI_PASSWORD[WIFI_BUFFER_SIZE - 1] = 0;
+            EEPROM.readString(EEPROM_ADDR_WIFI_PWD, wifi_password, WIFI_BUFFER_SIZE - 1);
+            wifi_password[WIFI_BUFFER_SIZE - 1] = 0;
 
-            SAVED_REMOTE_MODE = (RemoteMode)(EEPROM.readByte(EEPROM_ADDR_REMOTE_MODE));
+            saved_remote_mode = (RemoteMode)(EEPROM.readByte(EEPROM_ADDR_REMOTE_MODE));
         }
 
         void save() {
-            SAVED_REMOTE_MODE = REMOTE_MODE;
+            saved_remote_mode = remote_mode;
 
-            EEPROM.writeString(EEPROM_ADDR_WIFI_SSID, WIFI_SSID);
-            EEPROM.writeString(EEPROM_ADDR_WIFI_PWD, WIFI_PASSWORD);
-            EEPROM.writeByte(EEPROM_ADDR_REMOTE_MODE, (uint8_t)SAVED_REMOTE_MODE);
+            EEPROM.writeString(EEPROM_ADDR_WIFI_SSID, wifi_ssid);
+            EEPROM.writeString(EEPROM_ADDR_WIFI_PWD, wifi_password);
+            EEPROM.writeByte(EEPROM_ADDR_REMOTE_MODE, (uint8_t)saved_remote_mode);
         }
     }
 
     namespace io {
-        void parse_cmd(SystemAddr src, char* buffer, size_t len) {
+        void parse_cmd(SystemAddr src, const char* buffer, size_t len) {
             if (len == 0) {
                 log_errorln("> [ERROR] Invalid command length of 0!");
                 return;
             }
 
             Command cmd = *(Command*)buffer;
-            char* arg_bytes = buffer + sizeof(Command);
+            const char* arg_bytes = buffer + sizeof(Command);
             size_t cmd_len = len - sizeof(Command);
 
             if (cmd == Command::TEST) {
@@ -63,14 +63,14 @@ namespace bugsy_core {
 
             } else if (cmd == Command::MOVE) {
                 if (cmd_len == sizeof(Movement)) { 
-                    move::apply((Movement*)arg_bytes, config::MOVE_DUR);
+                    move::apply((Movement*)arg_bytes, config::mode_dur);
 
                 } else {
                     // ERROR: Invalid movement command
                 }
 
             } else if (cmd == Command::REMOTE_MODE) {
-                io::write_obj(src, &REMOTE_MODE);
+                io::write_obj(src, &remote_mode);
 
             } else if (cmd == Command::REMOTE_CONFIGURE) {
                 if (cmd_len < sizeof(RemoteMode)) {
@@ -88,19 +88,19 @@ namespace bugsy_core {
 
 
             } else if (cmd == Command::CONFIG_GET_WIFI_SSID) {
-                io::write_str(src, config::WIFI_SSID);
+                io::write_str(src, config::wifi_ssid);
 
             } else if (cmd == Command::CONFIG_SET_WIFI_SSID) {
                 if (len == 1) {
                     // No SSID given, reseting SSID
-                    config::WIFI_SSID[0] = 0;
+                    config::wifi_ssid[0] = 0;
                 } else {
-                    strncpy(config::WIFI_SSID, buffer + 1, WIFI_BUFFER_SIZE - 1);     
-                    config::WIFI_SSID[WIFI_BUFFER_SIZE - 1] = 0;                        // Safety terminator
+                    strncpy(config::wifi_ssid, buffer + 1, WIFI_BUFFER_SIZE - 1);     
+                    config::wifi_ssid[WIFI_BUFFER_SIZE - 1] = 0;                        // Safety terminator
                 }
 
                 log_info("> New WIFI SSID set: '");
-                log_info(config::WIFI_SSID);
+                log_info(config::wifi_ssid);
                 log_infoln("'");
 
             } else {
@@ -111,43 +111,43 @@ namespace bugsy_core {
         }
 
         void setup() {
-            TRADER_SERIAL->begin(BUGSY_CORE_TO_TRADER_BAUD);
-            TRADER_SERIAL->setTimeout(5);
+            trader_serial->begin(BUGSY_CORE_TO_TRADER_BAUD);
+            trader_serial->setTimeout(5);
 
-            RPI_SERIAL->begin(BUGSY_PI_BAUD);
-            RPI_SERIAL->setTimeout(5);
+            rpi_serial->begin(BUGSY_PI_BAUD);
+            rpi_serial->setTimeout(5);
         }   
 
         void handle() {
-            if (TRADER_SERIAL->available()) {
+            if (trader_serial->available()) {
                 io::parse_cmd(
                     SystemAddr::TRADER,
-                    io::PARSE_BUFFER,
-                    io::TRADER_SERIAL->readBytes(io::PARSE_BUFFER, PARSE_BUFFER_SIZE)
+                    io::parse_buffer,
+                    io::trader_serial->readBytes(io::parse_buffer, PARSE_BUFFER_SIZE)
                 );
             }
 
-            if (RPI_SERIAL->available()) {
+            if (rpi_serial->available()) {
                 io::parse_cmd(
                     SystemAddr::RPI,
-                    io::PARSE_BUFFER,
-                    io::RPI_SERIAL->readBytes(io::PARSE_BUFFER, PARSE_BUFFER_SIZE)
+                    io::parse_buffer,
+                    io::rpi_serial->readBytes(io::parse_buffer, PARSE_BUFFER_SIZE)
                 );
             }
         }
 
         void write(SystemAddr addr, const uint8_t* buffer, size_t len) {
             if ((uint8_t)addr | (uint8_t)SystemAddr::TRADER) {
-                io::TRADER_SERIAL->write(buffer, len);
+                io::trader_serial->write(buffer, len);
             }
 
             if ((uint8_t)addr | (uint8_t)SystemAddr::RPI) {
-                io::RPI_SERIAL->write(buffer, len);
+                io::rpi_serial->write(buffer, len);
             }
 
             // Remotes
             if (remote::mode_has_bt(addr)) {
-                io::bt_serial.write(buffer, len);
+                // BLE CODE
             }
         }
     }
@@ -172,42 +172,42 @@ namespace bugsy_core {
 
         void stop() {
             apply_to_pins(&NO_MOVE);
-            DURATION = 0;
-            MOVE = NO_MOVE;
+            duration = 0;
+            move = NO_MOVE;
         }
 
         uint32_t lasts_until() {
-            return STAMP + DURATION;
+            return stamp + duration;
         }
 
-        void apply_to_pins(const Movement* move) {
-            if ((bool)move->chain_left_dir) {
+        void apply_to_pins(const Movement* new_move) {
+            if ((bool)new_move->chain_left_dir) {
                 analogWrite(PIN_CHAIN_LEFT_BW, 0);
-                analogWrite(PIN_CHAIN_LEFT_FW, move->chain_left_duty);
+                analogWrite(PIN_CHAIN_LEFT_FW, new_move->chain_left_duty);
             } else {
                 analogWrite(PIN_CHAIN_LEFT_FW, 0);
-                analogWrite(PIN_CHAIN_LEFT_BW, move->chain_left_duty);
+                analogWrite(PIN_CHAIN_LEFT_BW, new_move->chain_left_duty);
             }
 
-            if ((bool)move->chain_right_dir) {
+            if ((bool)new_move->chain_right_dir) {
                 analogWrite(PIN_CHAIN_RIGHT_BW, 0);
-                analogWrite(PIN_CHAIN_RIGHT_FW, move->chain_right_duty);
+                analogWrite(PIN_CHAIN_RIGHT_FW, new_move->chain_right_duty);
             } else {
                 analogWrite(PIN_CHAIN_RIGHT_FW, 0);
-                analogWrite(PIN_CHAIN_RIGHT_BW, move->chain_right_duty);
+                analogWrite(PIN_CHAIN_RIGHT_BW, new_move->chain_right_duty);
             }
         }
 
-        void apply(const Movement* move, MoveDuration duration) {
-            apply_to_pins(move);
+        void apply(const Movement* new_move, MoveDuration duration) {
+            apply_to_pins(new_move);
 
-            MOVE = *move;
-            DURATION = duration;
-            STAMP = millis();
+            move = *new_move;
+            duration = duration;
+            stamp = millis();
         }
 
         void update() {
-            if (DURATION) {
+            if (duration) {
                 if (lasts_until() < millis()) {
                     stop();
                 }
@@ -217,15 +217,44 @@ namespace bugsy_core {
 
     namespace remote {
         // Bluetooth
+            void BLECallbacks::onWrite(BLECharacteristic* character) {
+                String value = character->getValue();
+
+                io::parse_cmd(SystemAddr::BLUETOOTH, value.c_str(), value.length());
+            }
+
             void start_bt() {
-                // io::bt_serial.begin(BUGSY_DEVICE_NAME);
-                // io::bt_serial.setTimeout(5);
-                remote::BT_ACTIVE = true;
+                BLEDevice::init(BUGSY_DEVICE_NAME);
+                ble_server = BLEDevice::createServer();
+                services::cmd::service = ble_server->createService(BUGSY_BLE_CMD_SERVICE_UUID);
+                services::cmd::rx = services::cmd::service->createCharacteristic(
+                    BUGSY_BLE_CMD_RX_UUID,
+                    BLECharacteristic::PROPERTY_WRITE
+                );
+                services::cmd::tx = services::cmd::service->createCharacteristic(
+                    BUGSY_BLE_CMD_TX_UUID,
+                    BLECharacteristic::PROPERTY_READ
+                );
+
+                services::cmd::rx->setCallbacks(new BLECallbacks());
+
+                services::cmd::service->start();
+
+                ble_adv = BLEDevice::getAdvertising();
+
+                ble_adv->addServiceUUID(BUGSY_BLE_CMD_SERVICE_UUID);
+                ble_adv->setScanResponse(true);
+                ble_adv->setMinPreferred(0x06);
+                ble_adv->setMaxPreferred(0x12);
+
+                BLEDevice::startAdvertising();
+
+                bt_active = true;
             }
 
             void stop_bt() {
                 // io::bt_serial.end();
-                remote::BT_ACTIVE = false;
+                bt_active = false;
             }
         // 
 
@@ -240,16 +269,16 @@ namespace bugsy_core {
         // 
 
         void configure(RemoteMode mode) {
-            RemoteMode action_req = (RemoteMode)((uint8_t)mode ^ (uint8_t)REMOTE_MODE);
+            RemoteMode action_req = (RemoteMode)((uint8_t)mode ^ (uint8_t)remote_mode);
 
             // Services to turn off
-            RemoteMode turn_off = (RemoteMode)((uint8_t)action_req & (uint8_t)REMOTE_MODE);
+            RemoteMode turn_off = (RemoteMode)((uint8_t)action_req & (uint8_t)remote_mode);
 
             // Services to turn on
             RemoteMode turn_on = (RemoteMode)((uint8_t)action_req & (uint8_t)mode);
 
             if (mode_has_bt(turn_on)) {
-                log_info("| > Setting up bluetooth serial ... ");
+                log_info("| > Starting bluetooth ... ");
                 start_bt();
                 log_infoln("done!");
 
@@ -258,23 +287,17 @@ namespace bugsy_core {
                 log_infoln("'");
             }
 
-            if ((!mode_has_wifi(REMOTE_MODE)) && (mode_has_wifi(turn_on))) {
+            if ((!mode_has_wifi(remote_mode)) && (mode_has_wifi(turn_on))) {
                 log_info("| > Setting up WiFi ... ");
                 start_wifi();
             }
 
-            REMOTE_MODE = mode;
+            remote_mode = mode;
         }
 
         void handle() {
             if (mode_has_bt()) {
-                // if (io::bt_serial.available()) {
-                //     io::parse_cmd(
-                //         SystemAddr::BLUETOOTH,
-                //         io::PARSE_BUFFER,
-                //         io::bt_serial.readBytes(io::PARSE_BUFFER, PARSE_BUFFER_SIZE)
-                //     );
-                // }
+                // Skip
             }
         }
     }
@@ -298,7 +321,7 @@ void setup() {
 
     // Set status to setup
     log_debugln("> Running setup ... ");
-    bugsy_core::STATUS = Status::SETUP;
+    bugsy_core::status = Status::SETUP;
 
     // Load EEPROM
     log_debug("| > Loading EEPROM ... ");
@@ -306,23 +329,23 @@ void setup() {
     log_debugln("done!");
 
     // Print out configuration to trace
-    if (bugsy_core::remote::mode_has_bt(bugsy_core::config::SAVED_REMOTE_MODE)) {
+    if (bugsy_core::remote::mode_has_bt(bugsy_core::config::saved_remote_mode)) {
         log_traceln("| | > Config bluetooth enabled!");
     }
 
-    if (bugsy_core::remote::mode_has_wifi(bugsy_core::config::SAVED_REMOTE_MODE)) {
+    if (bugsy_core::remote::mode_has_wifi(bugsy_core::config::saved_remote_mode)) {
         log_traceln("| | > Config WiFi enabled!");
     }
 
     // Apply remote mode with trader always being activated
-    bugsy_core::remote::configure(bugsy_core::config::SAVED_REMOTE_MODE);
+    bugsy_core::remote::configure(bugsy_core::config::saved_remote_mode);
 
     log_info("| > Setting up motor ctrl ... ");
     bugsy_core::move::setup();
     log_infoln("done!");
 
     log_infoln("> Setup complete!");
-    bugsy_core::STATUS = Status::RUNNING;
+    bugsy_core::status = Status::RUNNING;
 }
 
 void loop() {

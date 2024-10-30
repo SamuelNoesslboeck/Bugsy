@@ -29,9 +29,9 @@ namespace bugsy_core {
     const static Movement NO_MOVE = Movement(Direction::CCW, Direction::CCW, 0, 0);
 
     namespace move {
-        static Movement MOVE = NO_MOVE;
-        static uint32_t STAMP;
-        static MoveDuration DURATION;
+        static Movement move = NO_MOVE;
+        static uint32_t stamp;
+        static MoveDuration duration;
 
         void setup();
 
@@ -39,9 +39,9 @@ namespace bugsy_core {
 
         uint32_t lasts_until();
 
-        void apply_to_pins(const Movement* move);
+        void apply_to_pins(const Movement* new_move);
 
-        void apply(const Movement* move, MoveDuration duration);
+        void apply(const Movement* new_move, MoveDuration duration);
 
         void update();
     }

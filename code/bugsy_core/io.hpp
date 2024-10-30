@@ -7,15 +7,11 @@
 namespace bugsy_core {
     namespace io {
         // Serials
-        static BLEServer* BLE_SERVER = nullptr;
-        static BLEService* BLE_SERVICE = nullptr;
-        static BLECharacteristic* BLE_CHARACTER = nullptr;
-
-        static HardwareSerial* TRADER_SERIAL = &Serial1;
-        static HardwareSerial* RPI_SERIAL = &Serial2;
+        static HardwareSerial* trader_serial = &Serial1;
+        static HardwareSerial* rpi_serial = &Serial2;
 
 
-        static char PARSE_BUFFER [PARSE_BUFFER_SIZE];
+        static char parse_buffer [PARSE_BUFFER_SIZE];
 
         static void parse_cmd(SystemAddr addr, const char* buffer, size_t len);
 

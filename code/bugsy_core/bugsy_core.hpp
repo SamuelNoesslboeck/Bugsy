@@ -25,8 +25,9 @@
 // Remotes 
 # define BUGSY_DEVICE_NAME "bugsy"
 
-# define BUGSY_BLE_SERVICE_UUID "2b43a459-6485-4362-bc1b-36bebe07925a"
-# define BUGSY_BLE_CHARACTER_UUID "624672e0-142a-41be-9d45-4f63f7c0d6e9"
+# define BUGSY_BLE_CMD_SERVICE_UUID "2b43a459-6485-4362-bc1b-36bebe07925a"
+# define BUGSY_BLE_CMD_RX_UUID "624672e0-142a-41be-9d45-4f63f7c0d6e9"
+# define BUGSY_BLE_CMD_TX_UUID "624672e1-142a-41be-9d45-4f63f7c0d6e9"
 
 // Motor control pins
 # define PIN_CHAIN_LEFT_FW 0
@@ -74,15 +75,15 @@ namespace bugsy_core {
     typedef RemoteMode SystemAddr;
 
         // Static fields
-    static RemoteMode REMOTE_MODE = RemoteMode::NONE;
-    static Status STATUS;
+    static RemoteMode remote_mode = RemoteMode::NONE;
+    static Status status;
 
     namespace config {
-        static RemoteMode SAVED_REMOTE_MODE = RemoteMode::NONE;
-        static MoveDuration MOVE_DUR = BUGSY_DEFAULT_MOVE_DUR;
+        static RemoteMode saved_remote_mode = RemoteMode::NONE;
+        static MoveDuration mode_dur = BUGSY_DEFAULT_MOVE_DUR;
 
-        static char WIFI_SSID [WIFI_BUFFER_SIZE] = "";
-        static char WIFI_PASSWORD [WIFI_BUFFER_SIZE] = "";
+        static char wifi_ssid [WIFI_BUFFER_SIZE] = "";
+        static char wifi_password [WIFI_BUFFER_SIZE] = "";
 
         static void load();
 
@@ -90,10 +91,30 @@ namespace bugsy_core {
     }
 
     namespace remote {
-        // BT
-            static bool BT_ACTIVE = false;
+        // BLE
+            class BLECallbacks : public BLECharacteristicCallbacks {
+                void onWrite(BLECharacteristic* character);
+            };
 
-            static bool mode_has_bt(RemoteMode mode = REMOTE_MODE) {
+            static BLEServer* ble_server = nullptr;
+            static BLEAdvertising* ble_adv = nullptr;
+
+            namespace services {
+                namespace cmd {
+                    static BLEService* service;
+
+                    static BLECharacteristic* rx;
+                    static BLECharacteristic* tx;
+                }
+
+                namespace battery {
+                    static BLEService* service;
+                }
+            }
+
+            static bool bt_active = false;
+
+            static bool mode_has_bt(RemoteMode mode = remote_mode) {
                 return (bool)(((uint8_t)mode) | ((uint8_t)RemoteMode::BLUETOOTH));
             }
 
@@ -103,14 +124,14 @@ namespace bugsy_core {
         //
 
         // WiFi
-            static bool WIFI_ACTIVE = false;
+            static bool wifi_active = false;
 
-            static bool mode_has_wifi(RemoteMode mode = REMOTE_MODE) {
+            static bool mode_has_wifi(RemoteMode mode = remote_mode) {
                 return (bool)(((uint8_t)mode) | ((uint8_t)RemoteMode::ANY_WIFI));
             }
 
             static bool has_wifi_data() {
-                return (bool)(config::WIFI_SSID[0]);
+                return (bool)(config::wifi_ssid[0]);
             }
 
             static void start_wifi();
@@ -125,7 +146,7 @@ namespace bugsy_core {
                 stop_bt();
                 stop_wifi();
 
-                REMOTE_MODE = RemoteMode::NONE;
+                remote_mode = RemoteMode::NONE;
             }
 
             static void handle();

@@ -2,5 +2,6 @@
     "sketch": "bugsy_core.ino",
     "board": "esp32:esp32:nodemcu-32s",
     "output": "build",
-    "configuration": "FlashFreq=80,UploadSpeed=115200,DebugLevel=none,EraseFlash=none"
+    "configuration": "FlashFreq=80,UploadSpeed=115200,DebugLevel=none,EraseFlash=none",
+    "port": "COM8"
 }
