@@ -15,7 +15,10 @@
 # include "BluetoothSerial.h"
 
 // Local libraries
+# include "../libs/sylo/logging.hpp"
 # include "../libs/sylo/types.hpp"
+
+# define LOG_LEVEL LOG_LEVEL_TRACE
 
 // Local headers
 # include "motors.hpp"

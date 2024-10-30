@@ -5,6 +5,10 @@
 			"path": "bugsy_core"
 		},
 		{
+			"name": "bugsy_rpi",
+			"path": "bugsy_rpi"
+		},
+		{
 			"name": "bugsy_trader",
 			"path": "bugsy_trader"
 		},
