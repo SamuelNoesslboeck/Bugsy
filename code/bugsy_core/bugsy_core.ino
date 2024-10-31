@@ -51,9 +51,13 @@ namespace bugsy_core {
 
             if (cmd == Command::TEST) {
                 log_infoln("> Test command called!");
-                
+
                 // Echo the rest of the command back
                 if (cmd_len) {
+                    log_trace("| > Input len: ");
+                    log_traceln(len);
+                    log_trace("| > Remaining len: ");
+                    log_traceln(cmd_len);
                     io::write(src, (const uint8_t*)arg_bytes, cmd_len);
                 }
 
@@ -66,6 +70,8 @@ namespace bugsy_core {
                     move::apply((Movement*)arg_bytes, config::mode_dur);
 
                 } else {
+                    log_trace("> Bad movement command with length: ");
+                    log_traceln(cmd_len);
                     // ERROR: Invalid movement command
                 }
 
@@ -119,6 +125,14 @@ namespace bugsy_core {
         }   
 
         void handle() {
+            if (usb_serial->available()) {
+                io::parse_cmd(
+                    SystemAddr::USB,
+                    io::parse_buffer,
+                    io::usb_serial->readBytes(io::parse_buffer, PARSE_BUFFER_SIZE)
+                );
+            }
+
             if (trader_serial->available()) {
                 io::parse_cmd(
                     SystemAddr::TRADER,
@@ -147,7 +161,7 @@ namespace bugsy_core {
 
             // Remotes
             if (remote::mode_has_bt(addr)) {
-                // BLE CODE
+                remote::bt_serial.write(buffer, len);
             }
         }
     }
@@ -217,43 +231,46 @@ namespace bugsy_core {
 
     namespace remote {
         // Bluetooth
-            void BLECallbacks::onWrite(BLECharacteristic* character) {
-                String value = character->getValue();
+            // void BLECallbacks::onWrite(BLECharacteristic* character) {
+            //     String value = character->getValue();
 
-                io::parse_cmd(SystemAddr::BLUETOOTH, value.c_str(), value.length());
-            }
+            //     io::parse_cmd(SystemAddr::BLUETOOTH, value.c_str(), value.length());
+            // }
 
             void start_bt() {
-                BLEDevice::init(BUGSY_DEVICE_NAME);
-                ble_server = BLEDevice::createServer();
-                services::cmd::service = ble_server->createService(BUGSY_BLE_CMD_SERVICE_UUID);
-                services::cmd::rx = services::cmd::service->createCharacteristic(
-                    BUGSY_BLE_CMD_RX_UUID,
-                    BLECharacteristic::PROPERTY_WRITE
-                );
-                services::cmd::tx = services::cmd::service->createCharacteristic(
-                    BUGSY_BLE_CMD_TX_UUID,
-                    BLECharacteristic::PROPERTY_READ
-                );
+                bt_serial.begin(BUGSY_DEVICE_NAME);
+                bt_serial.setTimeout(5);
 
-                services::cmd::rx->setCallbacks(new BLECallbacks());
+                // BLEDevice::init(BUGSY_DEVICE_NAME);
+                // ble_server = BLEDevice::createServer();
+                // services::cmd::service = ble_server->createService(BUGSY_BLE_CMD_SERVICE_UUID);
+                // services::cmd::rx = services::cmd::service->createCharacteristic(
+                //     BUGSY_BLE_CMD_RX_UUID,
+                //     BLECharacteristic::PROPERTY_WRITE
+                // );
+                // services::cmd::tx = services::cmd::service->createCharacteristic(
+                //     BUGSY_BLE_CMD_TX_UUID,
+                //     BLECharacteristic::PROPERTY_READ
+                // );
 
-                services::cmd::service->start();
+                // services::cmd::rx->setCallbacks(new BLECallbacks());
 
-                ble_adv = BLEDevice::getAdvertising();
+                // services::cmd::service->start();
 
-                ble_adv->addServiceUUID(BUGSY_BLE_CMD_SERVICE_UUID);
-                ble_adv->setScanResponse(true);
-                ble_adv->setMinPreferred(0x06);
-                ble_adv->setMaxPreferred(0x12);
+                // ble_adv = BLEDevice::getAdvertising();
 
-                BLEDevice::startAdvertising();
+                // ble_adv->addServiceUUID(BUGSY_BLE_CMD_SERVICE_UUID);
+                // ble_adv->setScanResponse(true);
+                // ble_adv->setMinPreferred(0x06);
+                // ble_adv->setMaxPreferred(0x12);
 
-                bt_active = true;
+                // BLEDevice::startAdvertising();
+
+                // bt_active = true;
             }
 
             void stop_bt() {
-                // io::bt_serial.end();
+                
                 bt_active = false;
             }
         // 
@@ -297,7 +314,13 @@ namespace bugsy_core {
 
         void handle() {
             if (mode_has_bt()) {
-                // Skip
+                if (bt_serial.available()) {
+                    io::parse_cmd(
+                        SystemAddr::BLUETOOTH,
+                        io::parse_buffer,
+                        bt_serial.readBytes(io::parse_buffer, PARSE_BUFFER_SIZE)
+                    );
+                }
             }
         }
     }

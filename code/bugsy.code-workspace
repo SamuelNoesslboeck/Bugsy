@@ -15,6 +15,9 @@
 		{
 			"name": "libs",
 			"path": "libs"
+		},
+		{
+			"path": "desktop/bugpy"
 		}
 	],
 	"settings": {

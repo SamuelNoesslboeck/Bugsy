@@ -6,6 +6,8 @@
 
 # pragma once
 
+# include <Arduino.h>
+
 /// @brief Current version of the bugsy software
 # define BUGSY_SOFTWARE_VERSION "0.1.0/2024/10/30"
 
@@ -29,7 +31,7 @@ namespace bugsy_core {
         CRITICAL_ERROR
     };
 
-    enum class Command {
+    enum class Command : uint8_t {
         /// Test command for debug purposes
         /// @return The additional bytes given
         TEST = 0x00,
@@ -42,7 +44,7 @@ namespace bugsy_core {
         STATUS = 0x02,
 
         /// Issue a new movement
-        /// @param 0x00-0x05 6 byte `Movement` struct, will be parsed and applied directly, every sequence of bytes is valid!
+        /// @param 0x00-0x03 4 byte `Movement` struct, will be parsed and applied directly, every sequence of bytes is valid!
         MOVE = 0x10,
 
         /// Internal command to signal that the trader is ready
@@ -72,6 +74,6 @@ namespace bugsy_core {
         CONFIG_GET_WIFI_PWD = 0xA2,
         /// Set the current password for the WiFi connection
         /// @param 0x00-? The WiFi password as null terminated string (for max len see `WIFI_BUFFER_SIZE`)
-        CONFIG_SET_WIFI_PWD = 0xA3,
+        CONFIG_SET_WIFI_PWD = 0xA3
     }; 
 }

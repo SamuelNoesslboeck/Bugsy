@@ -8,9 +8,10 @@
 
 // External libraries
 # include <Arduino.h>
-# include <BLEDevice.h>
-# include <BLEUtils.h>
-# include <BLEServer.h>
+// # include <BLEDevice.h>
+// # include <BLEUtils.h>
+// # include <BLEServer.h>
+# include <BluetoothSerial.h>
 
 // Local libraries
 # include "../libs/bugsy.hpp"
@@ -29,11 +30,19 @@
 # define BUGSY_BLE_CMD_RX_UUID "624672e0-142a-41be-9d45-4f63f7c0d6e9"
 # define BUGSY_BLE_CMD_TX_UUID "624672e1-142a-41be-9d45-4f63f7c0d6e9"
 
-// Motor control pins
-# define PIN_CHAIN_LEFT_FW 0
-# define PIN_CHAIN_LEFT_BW 0
-# define PIN_CHAIN_RIGHT_FW 0
-# define PIN_CHAIN_RIGHT_BW 0
+// PINS
+    // Motor control pins
+    # define PIN_CHAIN_LEFT_FW 0
+    # define PIN_CHAIN_LEFT_BW 0
+    # define PIN_CHAIN_RIGHT_FW 0
+    # define PIN_CHAIN_RIGHT_BW 0
+
+    // Servo pins
+    # define PIN_SERVO_HEAD 0
+
+    // Peripheral
+    # define PIN_VOLTAGE_MEAS 0
+//
 
 // EEPROM
 # define EEPROM_SIZE 128
@@ -61,8 +70,9 @@ namespace bugsy_core {
         BLUETOOTH = 0x01,
 
         // Local system nodes, always active, but can also be command sources!
-        TRADER = 0x02,
-        RPI = 0x04,
+        USB = 0x02,
+        TRADER = 0x04,
+        RPI = 0x08,
 
         WIFI_UDP = 0x10,
         WIFI_TCP = 0x20,
@@ -92,25 +102,29 @@ namespace bugsy_core {
 
     namespace remote {
         // BLE
-            class BLECallbacks : public BLECharacteristicCallbacks {
-                void onWrite(BLECharacteristic* character);
-            };
+            static BluetoothSerial bt_serial;
 
-            static BLEServer* ble_server = nullptr;
-            static BLEAdvertising* ble_adv = nullptr;
+            // class BLECallbacks : public BLECharacteristicCallbacks {
+            //     void onWrite(BLECharacteristic* character);
+            // };
 
-            namespace services {
-                namespace cmd {
-                    static BLEService* service;
+            // static BLEServer* ble_server = nullptr;
+            // static BLEAdvertising* ble_adv = nullptr;
 
-                    static BLECharacteristic* rx;
-                    static BLECharacteristic* tx;
-                }
+            // namespace services {
+            //     namespace cmd {
+            //         static BLEService* service;
 
-                namespace battery {
-                    static BLEService* service;
-                }
-            }
+            //         static BLECharacteristic* rx;
+            //         static BLECharacteristic* tx;
+            //     }
+
+            //     namespace battery {
+            //         static BLEService* service;
+            //     }
+            // }
+
+            
 
             static bool bt_active = false;
 

@@ -1,5 +1,7 @@
 # pragma once
 
+# include <ESP32Servo.h>
+
 # include "../libs/sylo/types.hpp"
 
 /// Everything concering the core MCU of the bugsy robot
@@ -26,12 +28,16 @@ namespace bugsy_core {
         Movement(Direction chain_left_dir, Direction chain_right_dir, uint8_t chain_left_duty, uint8_t chain_right_duty);
     };
 
+    /// Helper constant indicating no movement
     const static Movement NO_MOVE = Movement(Direction::CCW, Direction::CCW, 0, 0);
 
+    /// Module for everything concerning movements
     namespace move {
         static Movement move = NO_MOVE;
         static uint32_t stamp;
         static MoveDuration duration;
+
+        Servo servo_head;
 
         void setup();
 
