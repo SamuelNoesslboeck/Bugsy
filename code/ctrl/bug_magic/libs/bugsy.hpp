@@ -1,6 +1,8 @@
-// #
-// # 
-// #
+// #############################
+// #    BUGSY - MAIN HEADER    #
+// #############################
+//
+// > Version: 0.1.1/2024/11/04
 //
 // General header for commands and interfaces shared between multiple controllers in the system
 
@@ -11,6 +13,10 @@
 /// @brief Current version of the bugsy software
 # define BUGSY_SOFTWARE_VERSION "0.1.0/2024/10/30"
 
+// Remotes
+/// @brief Current device name 
+# define BUGSY_DEVICE_NAME "bugsy"
+
 // Baud rates
 /// @brief Baud rate between the core and the trader
 # define BUGSY_CORE_TO_TRADER_BAUD 250000
@@ -18,62 +24,61 @@
 /// Everything concering the core MCU of the bugsy robot
 namespace bugsy_core {
     /// The status of the core microcontroller
-    enum class Status {
+    enum class Status : uint8_t {
         /// Helper status for external controllers to signal they have not made connection with the microcontroller yet
-        DISCONNECTED,
+        Disconnected = 0x20,
         /// The controller is currently setting up
-        SETUP,
+        Setup = 0x00,
         /// The controller is in standby mode
-        STANDBY,
+        Standby = 0x10,
         /// The controller is at full activity and running
-        RUNNING,
+        Running = 0x01,
         /// The controller has stopped due to a critical error
-        CRITICAL_ERROR
+        CriticalError = 0xFF
     };
 
     enum class Command : uint8_t {
         /// Test command for debug purposes
         /// @return The additional bytes given
-        TEST = 0x00,
+        Test = 0x00,
 
-        /// Ping command for connectivity check
-        /// @return `0x00-0x03` - The uptime in milliseconds as `uint32_t`
-        PING = 0x01,
         /// Status command mainly for internal communication
         /// @return `0x00` - The current `Status` (see `bugsy_core::Status`)
-        STATUS = 0x02,
+        Status = 0x01,
 
         /// Issue a new movement
         /// @param 0x00-0x03 4 byte `Movement` struct, will be parsed and applied directly, every sequence of bytes is valid!
-        MOVE = 0x10,
+        Move = 0x10,
 
         /// Internal command to signal that the trader is ready
-        TRADER_READY = 0x20,
+        TraderReady = 0x20,
         /// Internal command to signal that the RPi is ready
-        RPI_READY = 0x21,
+        RPiReady = 0x21,
 
         /// Returns the current remote mode
         /// @return `0x00` - The current remote mode
-        REMOTE_MODE = 0x40,
+        RemoteMode = 0x40,
         /// Reconfigures the remote settings made
         /// @param 0x00 The new `RemoteMode`
-        REMOTE_CONFIGURE = 0x41,
+        RemoteConfigure = 0x41,
 
         /// Safe the configuration to the EEPROM
-        CONFIG_SAVE = 0x80,
+        SaveConfig = 0x80,
 
         /// Get the current SSID for the WiFi connection
         /// @return The WiFi SSID as null terminated string (for max len see `WIFI_BUFFER_SIZE`)
-        CONFIG_GET_WIFI_SSID = 0xA0, 
+        GetWiFiSSID = 0xA0, 
         /// Set the current SSID for the WiFi connection
         /// @param 0x00-? The WiFi SSID as null terminated string (for max len see `WIFI_BUFFER_SIZE`)
-        CONFIG_SET_WIFI_SSID = 0xA1,
+        SetWiFiSSID = 0xA1,
         
         /// Get the current password for the WiFi connection
         /// @return The WiFi password as null terminated string (for max len see `WIFI_BUFFER_SIZE`)
-        CONFIG_GET_WIFI_PWD = 0xA2,
+        GetWiFiPwd = 0xA2,
         /// Set the current password for the WiFi connection
         /// @param 0x00-? The WiFi password as null terminated string (for max len see `WIFI_BUFFER_SIZE`)
-        CONFIG_SET_WIFI_PWD = 0xA3
+        SetWiFiPwd = 0xA3
     }; 
+
+    static uint8_t MAC [6] = { 0xB0, 0xa7, 0x32, 0x2D, 0x6F, 0x5A };
 }

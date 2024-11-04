@@ -1,6 +1,9 @@
 [submodule "bugsy_printer_files"]
 	path = bugsy_printer_files
 	url = https://github.com/sn-printer-files/bugsy_printer_files
-[submodule "code/libs/sylo"]
-	path = code/libs/sylo
+[submodule "code/bugsy_trader/libs/sylo"]
+	path = code/bugsy_trader/libs/sylo
+	url = https://github.com/SamuelNoesslboeck/sylo
+[submodule "code/bugsy_core/libs/sylo"]
+	path = code/bugsy_core/libs/sylo
 	url = https://github.com/SamuelNoesslboeck/sylo

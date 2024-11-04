@@ -3,17 +3,42 @@
 # include <Arduino.h>
 
 // Local libraries
-# include "../libs/bugsy.hpp"
+# include "libs/bugsy.hpp"
 
+// Buffers
+# define PARSE_BUFFER_SIZE 64
+
+// Baud rates
+# define BUGSY_TRADER_DEBUG_BAUD 115200
 
 namespace bugsy_trader {
+    namespace core {
+        static bugsy_core::Status status = bugsy_core::Status::Disconnected;
+
+        // Commands
+        void test();
+
+        bugsy_core::Status get_status();
+
+        void trader_ready();
+
+        char* get_wifi_ssid();
+    }
+
     namespace io {
-        static HardwareSerial* CORE_SERIAL = &Serial1;
+        static HardwareSerial* core_serial = &Serial3;
 
         // Events
             void setup();
 
             void handle();
         // 
+
+        static char parse_buffer [PARSE_BUFFER_SIZE] = "";
+
+        void send_core(bugsy_core::Command cmd);
+
+        template<typename T>
+        T* recv_core();
     }
 }

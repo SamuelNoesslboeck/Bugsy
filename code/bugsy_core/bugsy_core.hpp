@@ -8,15 +8,12 @@
 
 // External libraries
 # include <Arduino.h>
-// # include <BLEDevice.h>
-// # include <BLEUtils.h>
-// # include <BLEServer.h>
 # include <BluetoothSerial.h>
 
 // Local libraries
-# include "../libs/bugsy.hpp"
-# include "../libs/sylo/logging.hpp"
-# include "../libs/sylo/types.hpp"
+# include "libs/bugsy.hpp"
+# include "libs/sylo/logging.hpp"
+# include "libs/sylo/types.hpp"
 
 # define LOG_LEVEL LOG_LEVEL_TRACE
 
@@ -24,8 +21,6 @@
 # include "motors.hpp"
 
 // Remotes 
-# define BUGSY_DEVICE_NAME "bugsy"
-
 # define BUGSY_BLE_CMD_SERVICE_UUID "2b43a459-6485-4362-bc1b-36bebe07925a"
 # define BUGSY_BLE_CMD_RX_UUID "624672e0-142a-41be-9d45-4f63f7c0d6e9"
 # define BUGSY_BLE_CMD_TX_UUID "624672e1-142a-41be-9d45-4f63f7c0d6e9"
@@ -42,6 +37,13 @@
 
     // Peripheral
     # define PIN_VOLTAGE_MEAS 0
+
+    // Serial
+    # define PIN_SERIAL_TRADER_RX 18
+    # define PIN_SERIAL_TRADER_TX 19
+
+    # define PIN_SERIAL_RPI_RX 0
+    # define PIN_SERIAL_RPI_TX 0
 //
 
 // EEPROM
@@ -104,32 +106,10 @@ namespace bugsy_core {
         // BLE
             static BluetoothSerial bt_serial;
 
-            // class BLECallbacks : public BLECharacteristicCallbacks {
-            //     void onWrite(BLECharacteristic* character);
-            // };
-
-            // static BLEServer* ble_server = nullptr;
-            // static BLEAdvertising* ble_adv = nullptr;
-
-            // namespace services {
-            //     namespace cmd {
-            //         static BLEService* service;
-
-            //         static BLECharacteristic* rx;
-            //         static BLECharacteristic* tx;
-            //     }
-
-            //     namespace battery {
-            //         static BLEService* service;
-            //     }
-            // }
-
-            
-
             static bool bt_active = false;
 
             static bool mode_has_bt(RemoteMode mode = remote_mode) {
-                return (bool)(((uint8_t)mode) | ((uint8_t)RemoteMode::BLUETOOTH));
+                return (bool)(((uint8_t)mode) & ((uint8_t)RemoteMode::BLUETOOTH));
             }
 
             static void start_bt();
@@ -141,7 +121,7 @@ namespace bugsy_core {
             static bool wifi_active = false;
 
             static bool mode_has_wifi(RemoteMode mode = remote_mode) {
-                return (bool)(((uint8_t)mode) | ((uint8_t)RemoteMode::ANY_WIFI));
+                return (bool)(((uint8_t)mode) & ((uint8_t)RemoteMode::ANY_WIFI));
             }
 
             static bool has_wifi_data() {

@@ -2,7 +2,7 @@
 
 # include <ESP32Servo.h>
 
-# include "../libs/sylo/types.hpp"
+# include "libs/sylo/types.hpp"
 
 /// Everything concering the core MCU of the bugsy robot
 namespace bugsy_core {

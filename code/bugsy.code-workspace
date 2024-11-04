@@ -1,23 +1,20 @@
 {
 	"folders": [
 		{
-			"name": "bugsy_core",
+			"name": "Core",
 			"path": "bugsy_core"
 		},
 		{
-			"name": "bugsy_rpi",
+			"name": "RPi",
 			"path": "bugsy_rpi"
 		},
 		{
-			"name": "bugsy_trader",
+			"name": "Trader",
 			"path": "bugsy_trader"
 		},
 		{
-			"name": "libs",
-			"path": "libs"
-		},
-		{
-			"path": "desktop/bugpy"
+			"name": "Bugpy",
+			"path": "ctrl/bugpy"
 		}
 	],
 	"settings": {

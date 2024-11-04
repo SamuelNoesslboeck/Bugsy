@@ -1,6 +1,8 @@
 {
     "sketch": "bugsy_trader.ino",
-    "configuration": "cpu=atmega2560",
     "board": "arduino:avr:mega",
-    "output": "build"
+    "output": "build",
+    "port": "COM9",
+    "programmer": "avrispmkii",
+    "configuration": "cpu=atmega2560"
 }
