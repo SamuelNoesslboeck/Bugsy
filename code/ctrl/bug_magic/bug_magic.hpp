@@ -6,7 +6,8 @@
 # include <BluetoothSerial.h>
 
 // Local libraries
-# include "libs/bugsy.hpp"
+# include "bugsy.hpp"
+# include "spellbox.hpp"
 
 using bugsy_core::Command;
 

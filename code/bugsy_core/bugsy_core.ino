@@ -61,7 +61,7 @@ namespace bugsy_core {
                     io::write(src, (const uint8_t*)arg_bytes, cmd_len);
                 }
 
-            } else if (cmd == Command::Status) {
+            } else if (cmd == Command::GetStatus) {
                 io::write_obj(src, &status);
 
             } else if (cmd == Command::Move) {
@@ -73,6 +73,20 @@ namespace bugsy_core {
                     log_traceln(cmd_len);
                     // ERROR: Invalid movement command
                 }
+
+            } else if (cmd == Command::SetTraderReady) {
+                io::trader_ready = true;
+                log_infoln("> Trader ready!");
+
+            } else if (cmd == Command::IsTraderReady) {
+                io::write_obj(src, &io::trader_ready);
+
+            } else if (cmd == Command::SetRPiReady) {
+                io::rpi_ready = true;
+                log_infoln("> RPi ready!");
+
+            } else if (cmd == Command::IsRPiReady) {
+                io::write_obj(src, &io::rpi_ready);
 
             } else if (cmd == Command::RemoteMode) {
                 io::write_obj(src, &remote_mode);

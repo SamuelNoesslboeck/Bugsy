@@ -1,20 +1,40 @@
 # include <LiquidCrystal.h>
 
 // Local libraries
-# include "libs/sylo/logging.hpp"
+# include "sylo/logging.hpp"
+# include "sylo/timing/timer.hpp"
 
 # define LOG_LEVEL LOG_LEVEL_TRACE
 
 // Local headers
 # include "bugsy_trader.hpp"
 
+// Static fields
+static Timer status_interval;
+
 namespace bugsy_trader {
     namespace core {
+        void reconnect() {
+            log_info("> Connecting to core ...");
+
+            while (bugsy_trader::core::status != bugsy_core::Status::Running) {
+                delay(100);
+                log_info(".");
+                bugsy_trader::core::status = bugsy_trader::core::fetch_status();
+            }
+
+            // Send ready connection success to core
+            bugsy_trader::core::trader_ready();
+
+            log_infoln(" done!");
+        }
+
+        // Commands
         void test() {
             io::send_core(bugsy_core::Command::Test);
         }
 
-        bugsy_core::Status get_status() {
+        bugsy_core::Status fetch_status() {
             io::send_core(bugsy_core::Command::Status);
             return *io::recv_core<bugsy_core::Status>();
         }
@@ -64,24 +84,23 @@ void setup() {
     bugsy_trader::io::setup();
 
     log_infoln("> Setup done!");
+
+    bugsy_trader::core::reconnect();
+    status_interval.set(BUGSY_TRADER_STATUS_INTERVAL);
 }
 
 void loop() {
-    if (bugsy_trader::core::status != bugsy_core::Status::Running) {
-        log_info("> Connecting to core ... ");
-
-        while (bugsy_trader::core::status != bugsy_core::Status::Running) {
-            delay(100);
-            bugsy_trader::core::status = bugsy_trader::core::get_status();
-        }
-
-        // Send ready connection success to core
-        bugsy_trader::core::trader_ready();
-
-        log_infoln("done!");
-    }
-
     // log_infoln(bugsy_trader::core::get_wifi_ssid());
 
     delay(1000);
+
+    if (status_interval.has_elapsed()) {
+        bugsy_trader::core::status = bugsy_trader::core::fetch_status();
+
+        if (bugsy_trader::core::status != bugsy_core::Status::Running) {
+            bugsy_trader::core::reconnect();
+        }
+
+        status_interval.set();
+    }
 }

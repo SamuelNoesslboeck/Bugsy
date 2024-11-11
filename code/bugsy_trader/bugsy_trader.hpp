@@ -3,7 +3,10 @@
 # include <Arduino.h>
 
 // Local libraries
-# include "libs/bugsy.hpp"
+# include "bugsy.hpp"
+
+// Settings
+# define BUGSY_TRADER_STATUS_INTERVAL 1000
 
 // Buffers
 # define PARSE_BUFFER_SIZE 64
@@ -15,10 +18,12 @@ namespace bugsy_trader {
     namespace core {
         static bugsy_core::Status status = bugsy_core::Status::Disconnected;
 
+        void reconnect();
+
         // Commands
         void test();
 
-        bugsy_core::Status get_status();
+        bugsy_core::Status fetch_status();
 
         void trader_ready();
 

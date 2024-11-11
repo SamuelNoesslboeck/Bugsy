@@ -26,6 +26,11 @@ namespace bugsy_core {
         /// General buffer for parsing incomming data
         static char parse_buffer [PARSE_BUFFER_SIZE];
 
+        /// Whether or not the communication to the trader MCU has been established
+        static bool trader_ready = false;
+        /// Whether or not the communication
+        static bool rpi_ready = false;
+
         /// Parses a command for the given `buffer` and writes the output to the given `SystemAddr`
         /// @param addr The addr to write the output to
         /// @param buffer The buffer to read the data from

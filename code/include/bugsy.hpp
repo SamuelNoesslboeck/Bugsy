@@ -44,16 +44,21 @@ namespace bugsy_core {
 
         /// Status command mainly for internal communication
         /// @return `0x00` - The current `Status` (see `bugsy_core::Status`)
-        Status = 0x01,
+        GetStatus = 0x01,
 
         /// Issue a new movement
         /// @param 0x00-0x03 4 byte `Movement` struct, will be parsed and applied directly, every sequence of bytes is valid!
         Move = 0x10,
 
         /// Internal command to signal that the trader is ready
-        TraderReady = 0x20,
+        SetTraderReady = 0x20,
+        /// Get whether the trader is ready or not
+        /// @return `0x00` bool value
+        IsTraderReady = 0x21,
         /// Internal command to signal that the RPi is ready
-        RPiReady = 0x21,
+        SetRPiReady = 0x22,
+        /// Get whether the raspberry pi is ready or not
+        IsRPiReady = 0x23,
 
         /// Returns the current remote mode
         /// @return `0x00` - The current remote mode
@@ -80,5 +85,6 @@ namespace bugsy_core {
         SetWiFiPwd = 0xA3
     }; 
 
+    /// The MAC address of the core controller
     static uint8_t MAC [6] = { 0xB0, 0xa7, 0x32, 0x2D, 0x6F, 0x5A };
 }

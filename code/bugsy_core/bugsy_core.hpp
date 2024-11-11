@@ -11,9 +11,9 @@
 # include <BluetoothSerial.h>
 
 // Local libraries
-# include "libs/bugsy.hpp"
-# include "libs/sylo/logging.hpp"
-# include "libs/sylo/types.hpp"
+# include "bugsy.hpp"
+# include "sylo/logging.hpp"
+# include "sylo/types.hpp"
 
 # define LOG_LEVEL LOG_LEVEL_TRACE
 
