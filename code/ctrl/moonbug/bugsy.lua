@@ -1,8 +1,8 @@
 Command = {
     Test = 0x00,
     Status = 0x01,
-    
-    IsTraderReady = 0x02,
+
+    IsTraderReady = 0x21,
 }
 
 Status = {
@@ -38,28 +38,51 @@ local cmd = {
     ---@return nil|string
     get_status = function (fp)
         local err = write_cmd(fp, Command.Status)
-
-        if err then
-            return nil, err
-        end
+        if err then return nil, err end
 
         local status, err = fp:read(1)
-
-        if err then
-            return nil, err
-        end
+        if err then return nil, err end
 
         return string.byte(status, 1), nil
     end,
 
     is_trader_ready = function (fp)
         local err = write_cmd(fp, Command.IsTraderReady)
+        if err then return nil, err end
 
-        if err then
-            return nil, err
-        end
+        local status, err = fp:read(1)
+        if err then return nil, err end
+
+        return (string.byte(status, 1) ~= 0), nil
+    end,
+
+    is_rpi_ready = function (fp)
+        local err = write_cmd(fp, Command.IsTraderReady)
+        if err then return nil, err end
+
+        local status, err = fp:read(1)
+        if err then return nil, err end
+
+        return (string.byte(status, 1) ~= 0), nil
     end
 }
+
+local function get_status_summary(fp)
+    local status, err = cmd.get_status(fp)
+    if err then return nil, err end
+
+    local trader, err = cmd.is_trader_ready(fp)
+    if err then return nil, err end
+
+    local rpi, err = cmd.is_rpi_ready(fp)
+    if err then return nil, err end
+
+    return {
+        status = status,
+        trader = trader,
+        rpi = rpi
+    }, nil
+end
 
 -- Module export
 return {
@@ -67,6 +90,8 @@ return {
     Status = Status,
 
     write_cmd = write_cmd,
+    
+    get_status_summary = get_status_summary,
 
     cmd = cmd
 }
