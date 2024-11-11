@@ -5,3 +5,6 @@ c_cpp_properties.json
 # C/C++
 build
 target
+
+# Electronics
+*-backups

@@ -15,6 +15,10 @@
 		{
 			"name": "Bugpy",
 			"path": "ctrl/bugpy"
+		},
+		{
+			"name": "Moonbug",
+			"path": "ctrl/moonbug"
 		}
 	],
 	"settings": {

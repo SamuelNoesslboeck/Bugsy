@@ -1,14 +1,11 @@
-Commands = {
-    Test = 0x00,
-    Status = 0x01
-}
+local bugsy = require("bugsy")
 
-print("Opening file ... ")
-local file = io.open("COM8", "wb")
+print("Opening port ... ")
+local port, err = io.open("COM8", "wb")
 print("done!")
 
-print("Writing to file ... ")
-file:write(Commands.Status)
-print("done!");
-
-print("Reading: ", string.byte(file:read(1))) 
+if port then
+    print(bugsy.Status.to_string(bugsy.cmd.get_status(port)))
+else 
+    print(err)
+end
