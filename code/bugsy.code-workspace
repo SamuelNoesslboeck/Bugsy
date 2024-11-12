@@ -17,8 +17,8 @@
 			"path": "ctrl/bugpy"
 		},
 		{
-			"name": "Moonbug",
-			"path": "ctrl/moonbug"
+			"name": "RustBug",
+			"path": "ctrl/rustbug"
 		}
 	],
 	"settings": {

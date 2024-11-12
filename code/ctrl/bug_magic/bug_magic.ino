@@ -45,21 +45,17 @@ void setup() {
     bug_magic::remote::bt_serial.setTimeout(5);
 }
 
-uint8_t parse_buffer [128];
-
 void loop() {
     // Serial bridge from USB to Bluetooth
     if (Serial.available()) {
         bug_magic::remote::bt_serial.write(
-            parse_buffer, 
-            Serial.readBytes(parse_buffer, 128)
+            Serial.read()
         ); 
     }
 
     if (bug_magic::remote::bt_serial.available()) {
         Serial.write(
-            parse_buffer,
-            bug_magic::remote::bt_serial.readBytes(parse_buffer, 128)
+            bug_magic::remote::bt_serial.read()
         );
     }
 }

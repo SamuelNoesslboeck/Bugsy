@@ -66,8 +66,8 @@
 
 // Static variables
 namespace bugsy_core {
-    enum class RemoteMode {
-        NONE = 0,
+    enum class RemoteMode : uint8_t {
+        NONE = 0x00,
 
         BLUETOOTH = 0x01,
 

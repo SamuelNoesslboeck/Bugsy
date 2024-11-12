@@ -6,5 +6,8 @@ c_cpp_properties.json
 build
 target
 
+# Rust
+Cargo.lock
+
 # Electronics
 *-backups
