@@ -1,8 +1,8 @@
-use clap::{arg, command, value_parser, ArgAction, Command};
+use clap::{arg, command, Command};
 use colored::Colorize;
 
 mod bugsy;
-pub use bugsy::*;
+pub use bugsy::BugsySerial;
 
 fn main() {
     let mut command = command!() // requires `cargo` feature
@@ -10,6 +10,9 @@ fn main() {
         .subcommand(
             Command::new("status")
                 .about("Prints the curret status of the bugsy")
+        )
+        .subcommand(
+            Command::new("remote")
         );
 
     let matches = command.get_matches_mut();
@@ -18,7 +21,7 @@ fn main() {
 
     let mut bugsy = BugsySerial::new(port);
 
-    if let Some(matches) = matches.subcommand_matches("status") {
+    if let Some(_) = matches.subcommand_matches("status") {
         println!("{}", "> Bugsy - General status".bold());
         println!("| > Core status: {}", bugsy.get_status().unwrap());
         println!("| > Trader: {}", bugsy.is_trader_ready().unwrap().to_string().blue());

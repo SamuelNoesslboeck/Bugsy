@@ -10,4 +10,6 @@ target
 Cargo.lock
 
 # Electronics
+~*
 *-backups
+\#auto_saved_files\#
