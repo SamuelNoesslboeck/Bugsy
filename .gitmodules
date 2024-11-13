@@ -1,3 +1,9 @@
 [submodule "bugsy_printer_files"]
 	path = bugsy_printer_files
 	url = https://github.com/sn-printer-files/bugsy_printer_files
+[submodule "code/include/sylo"]
+	path = code/include/sylo
+	url = https://github.com/SamuelNoesslboeck/sylo
+[submodule "code/include/Spellbox"]
+	path = code/include/Spellbox
+	url = https://github.com/SamuelNoesslboeck/Spellbox

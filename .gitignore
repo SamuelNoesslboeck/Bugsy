@@ -1,5 +1,15 @@
 # Settings
-.vscode
+arduino.json
+c_cpp_properties.json
 
 # C/C++
+build
 target
+
+# Rust
+Cargo.lock
+
+# Electronics
+~*
+*-backups
+\#auto_saved_files\#

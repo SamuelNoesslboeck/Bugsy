@@ -1,14 +1,33 @@
 {
 	"folders": [
 		{
+			"name": "Core",
 			"path": "bugsy_core"
 		},
 		{
+			"name": "RPi",
+			"path": "bugsy_rpi"
+		},
+		{
+			"name": "Trader",
 			"path": "bugsy_trader"
+		},
+		{
+			"name": "Bugpy",
+			"path": "ctrl/bugpy"
+		},
+		{
+			"name": "RustBug",
+			"path": "ctrl/rustbug"
 		}
 	],
 	"settings": {
 		"cmake.exportCompileCommandsFile": false,
-		"cmake.loadCompileCommands": false
+		"cmake.loadCompileCommands": false,
+		"files.associations": {
+			"*.script": "lua",
+			"*.Ive-Object": "json",
+			"algorithm": "cpp"
+		}
 	}
 }
