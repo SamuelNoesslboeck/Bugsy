@@ -8,6 +8,5 @@
 
 The Bugsy is concepted as a robust little rover-like robot, that just uses two chains for movement, meaning no complex steering or other kind of movement is required.
 
-## Project log
-
-The project log with concept art and more is available [in the documentation](documentation/project_log.md).
+- [Code](code/README.md): Detailed description of the software with all of it's components
+- [Project Log](documentation/project_log.md): A detailed project log featuring a changelog with the decisions made along the way
