@@ -13,3 +13,7 @@ Cargo.lock
 ~*
 *-backups
 \#auto_saved_files\#
+
+# Draw.io
+.$*
+~$*

@@ -1,0 +1,3 @@
+# bugsy_rpi
+
+> WILL BE MOVED TO SEPERATE REPO IN THE FUTURE!
