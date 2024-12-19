@@ -1,7 +1,7 @@
 # Code
 
 <p align="center">
-    <img src="./bugsy_code_structure.svg" />
+    <img src="./export/bugsy_code_structure.svg" />
 </p>
 
 The Bugsy software is split upon multiple controllers and different client programs.
