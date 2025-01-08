@@ -3,6 +3,7 @@
 Here the projects creation is documented, alongside with some of the experiences I made and their impacts on the final outcome (if there is any). Some more detailed articles are listed below:
 
 - [Design and build of new battery pack](new_battery_pack.md) (2024/09/03)
+- [Chasis iterations](chasis_iterations.md) (2025/01/08)
 
 ## Design choices (2024/09/03)
 
@@ -24,3 +25,4 @@ Another task is to define which electrical components should be used by the bugs
 ## First code (2024/10/27)
 
 In October of 2024, I started with the first code for the microcontrollers and other hardware. Considering that I want to add a large number of remotes and internal devices like sensors and even an LCD-display, I figured that maybe the addition of another microcontroller to the Core ESP32 would be wise. 
+
