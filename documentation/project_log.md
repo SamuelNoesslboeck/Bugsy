@@ -35,3 +35,5 @@ Issues with the first build:
 - The fourth bearing is not required! Maybe install a possible mod slot?
 - Install better options for cable management, currently it's rather a mess
 - Print the core monobody as one, printer size should be sufficient
+- The core ESP is almost impossible to reach with a cable, make adjustments!
+- More and better connectors for core parts are required
