@@ -1,8 +1,6 @@
-# include <LiquidCrystal.h>
-
 // Local libraries
-# include "sylo/logging.hpp"
-# include "sylo/timing/timer.hpp"
+# include <sylo/logging.hpp>
+# include <sylo/timing/timer.hpp>
 
 # define LOG_LEVEL LOG_LEVEL_TRACE
 
@@ -35,12 +33,12 @@ namespace bugsy_trader {
         }
 
         bugsy_core::Status fetch_status() {
-            io::send_core(bugsy_core::Command::Status);
+            io::send_core(bugsy_core::Command::GetStatus);
             return *io::recv_core<bugsy_core::Status>();
         }
 
         void trader_ready() {
-            io::send_core(bugsy_core::Command::TraderReady);
+            io::send_core(bugsy_core::Command::IsTraderReady);
         }
 
         char* get_wifi_ssid() {

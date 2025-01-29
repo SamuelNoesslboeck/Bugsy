@@ -14,6 +14,14 @@
 // Baud rates
 # define BUGSY_TRADER_DEBUG_BAUD 115200
 
+// Pins
+    # define PIN_ENCODER_DT 0
+    # define PIN_ENCODER_CL 0
+    # define PIN_ENCODER_SW 0
+
+
+// 
+
 namespace bugsy_trader {
     namespace core {
         static bugsy_core::Status status = bugsy_core::Status::Disconnected;
@@ -28,6 +36,10 @@ namespace bugsy_trader {
         void trader_ready();
 
         char* get_wifi_ssid();
+    }
+
+    namespace device {
+        
     }
 
     namespace io {

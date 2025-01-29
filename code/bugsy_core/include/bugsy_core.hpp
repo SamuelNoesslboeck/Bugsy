@@ -20,11 +20,6 @@
 // Local headers
 # include "motors.hpp"
 
-// Remotes 
-// # define BUGSY_BLE_CMD_SERVICE_UUID "2b43a459-6485-4362-bc1b-36bebe07925a"
-// # define BUGSY_BLE_CMD_RX_UUID "624672e0-142a-41be-9d45-4f63f7c0d6e9"
-// # define BUGSY_BLE_CMD_TX_UUID "624672e1-142a-41be-9d45-4f63f7c0d6e9"
-
 // PINS
     // Motor control pins
     # define PIN_CHAIN_LEFT_FW 23

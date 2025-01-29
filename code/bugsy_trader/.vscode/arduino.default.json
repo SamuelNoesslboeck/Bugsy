@@ -1,9 +1,0 @@
-{
-    "sketch": "bugsy_trader.ino",
-    "configuration": "cpu=atmega2560",
-    "board": "arduino:avr:mega",
-    "output": "build",
-    "buildPreferences": [
-        [ "build.extra_flags", "-I${workspaceFolder}/code/include" ]
-    ]
-}
