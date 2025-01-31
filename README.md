@@ -22,6 +22,6 @@ The Bugsy is concepted as a robust little rover-like robot, that just uses two c
 ![Basic build-up](code/export/bugsy_code_structure.svg)
 
 The controls are split up into three controllers, ensuring a powerful and versatile control system, which are:
-- **Core**: A *NodeMCU-32S* microcontroller, 
-- **Trader**: 
-- **RPi**:
+- **Core**: A *NodeMCU-32S* microcontroller, responsible for motor control and basic connections
+- **Trader**: An *Arduino-Mega* microcontroller with a large set of IO-ports, responsible for peripheral devices, not required for core functionality
+- **RPi**: An additional *Raspberry Pi Zero*, responsible for expensive add-ons like camera and microphone
