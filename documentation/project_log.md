@@ -26,7 +26,7 @@ Another task is to define which electrical components should be used by the bugs
 
 In October of 2024, I started with the first code for the microcontrollers and other hardware. Considering that I want to add a large number of remotes and internal devices like sensors and even an LCD-display, I figured that maybe the addition of another microcontroller to the Core ESP32 would be wise. 
 
-## First build
+## First build (2025/01/28)
 
 Issues with the first build:
 
