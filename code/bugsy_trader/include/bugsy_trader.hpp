@@ -24,14 +24,14 @@
 
 namespace bugsy_trader {
     namespace core {
-        static bugsy_core::Status status = bugsy_core::Status::Disconnected;
+        static bugsy_core::State status = bugsy_core::State::DISCONNECTED;
 
         void reconnect();
 
         // Commands
         void test();
 
-        bugsy_core::Status fetch_status();
+        bugsy_core::State fetch_status();
 
         void trader_ready();
 

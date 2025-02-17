@@ -26,18 +26,20 @@ namespace bugsy_core {
         /// @param chain_left_duty 
         /// @param chain_right_duty 
         Movement(Direction chain_left_dir, Direction chain_right_dir, uint8_t chain_left_duty, uint8_t chain_right_duty);
+
     };
 
-    /// Helper constant indicating no movement
-    const static Movement NO_MOVE = Movement(Direction::CCW, Direction::CCW, 0, 0);
+    // Statics
+        static Movement MOVEMENT_NONE = { Direction::CCW, Direction::CCW, 0, 0 };
+    //
 
     /// Module for everything concerning movements
     namespace move {
-        static Movement move = NO_MOVE;
-        static uint32_t stamp;
-        static MoveDuration duration;
+        extern Movement move;
+        extern uint32_t stamp;
+        extern MoveDuration duration;
 
-        Servo servo_head;
+        static Servo servo_head;
 
         void setup();
 
@@ -49,6 +51,6 @@ namespace bugsy_core {
 
         void apply(const Movement* new_move, MoveDuration duration);
 
-        void update();
+        bool update();
     }
 }

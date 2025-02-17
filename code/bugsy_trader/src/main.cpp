@@ -15,7 +15,7 @@ namespace bugsy_trader {
         void reconnect() {
             log_info("> Connecting to core ...");
 
-            while (bugsy_trader::core::status != bugsy_core::Status::Running) {
+            while (bugsy_trader::core::status != bugsy_core::State::Running) {
                 delay(100);
                 log_info(".");
                 bugsy_trader::core::status = bugsy_trader::core::fetch_status();
@@ -32,9 +32,9 @@ namespace bugsy_trader {
             io::send_core(bugsy_core::Command::Test);
         }
 
-        bugsy_core::Status fetch_status() {
-            io::send_core(bugsy_core::Command::GetStatus);
-            return *io::recv_core<bugsy_core::Status>();
+        bugsy_core::State fetch_status() {
+            io::send_core(bugsy_core::Command::GetState);
+            return *io::recv_core<bugsy_core::State>();
         }
 
         void trader_ready() {
@@ -81,7 +81,7 @@ void setup() {
 
     bugsy_trader::io::setup();
 
-    log_infoln("> Setup done!");
+    log_infoln("> SETUP done!");
 
     bugsy_trader::core::reconnect();
     status_interval.set(BUGSY_TRADER_STATUS_INTERVAL);
@@ -95,7 +95,7 @@ void loop() {
     if (status_interval.has_elapsed()) {
         bugsy_trader::core::status = bugsy_trader::core::fetch_status();
 
-        if (bugsy_trader::core::status != bugsy_core::Status::Running) {
+        if (bugsy_trader::core::status != bugsy_core::State::Running) {
             bugsy_trader::core::reconnect();
         }
 

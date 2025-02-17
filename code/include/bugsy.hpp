@@ -8,10 +8,10 @@
 
 # pragma once
 
-# include <Arduino.h>
+# include <inttypes.h>
 
 /// @brief Current version of the bugsy software
-# define BUGSY_SOFTWARE_VERSION "0.1.0/2024/10/30"
+# define BUGSY_SOFTWARE_VERSION "0.2.0/2025/02/17"
 
 // Remotes
 /// @brief Current device name 
@@ -24,17 +24,17 @@
 /// Everything concering the core MCU of the bugsy robot
 namespace bugsy_core {
     /// The status of the core microcontroller
-    enum class Status : uint8_t {
-        /// Helper status for external controllers to signal they have not made connection with the microcontroller yet
-        Disconnected = 0x20,
+    enum class State : uint8_t {
+        /// No state has been set yet
+        NONE = 0x00,
         /// The controller is currently setting up
-        Setup = 0x00,
-        /// The controller is in standby mode
-        Standby = 0x10,
+        SETUP = 0x10,
+        /// The robot is in standby mode
+        STANDBY = 0x20,
         /// The controller is at full activity and running
-        Running = 0x01,
+        DRIVING = 0x21,
         /// The controller has stopped due to a critical error
-        CriticalError = 0xFF
+        ERROR = 0xF0
     };
 
     enum class Command : uint8_t {
@@ -42,9 +42,9 @@ namespace bugsy_core {
         /// @return The additional bytes given
         Test = 0x00,
 
-        /// Status command mainly for internal communication
-        /// @return `0x00` - The current `Status` (see `bugsy_core::Status`)
-        GetStatus = 0x01,
+        /// State command mainly for internal communication
+        /// @return `0x00` - The current `State` (see `bugsy_core::State`)
+        GetState = 0x01,
 
         /// Issue a new movement
         /// @param 0x00-0x03 4 byte `Movement` struct, will be parsed and applied directly, every sequence of bytes is valid!
@@ -60,11 +60,11 @@ namespace bugsy_core {
         /// Get whether the raspberry pi is ready or not
         IsRPiReady = 0x23,
 
-        /// Returns the current remote mode
+        /// Returns the current remote configuration
         /// @return `0x00` - The current remote mode
-        RemoteMode = 0x40,
+        Remotes = 0x40,
         /// Reconfigures the remote settings made
-        /// @param 0x00 The new `RemoteMode`
+        /// @param 0x00 The new `Remotes`
         RemoteConfigure = 0x41,
 
         /// Safe the configuration to the EEPROM
