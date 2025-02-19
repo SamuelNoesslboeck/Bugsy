@@ -31,8 +31,8 @@
     # define PIN_VOLTAGE_MEAS 0
 
     // UART connections
-    # define PIN_SERIAL_TRADER_RX 18
-    # define PIN_SERIAL_TRADER_TX 19
+    # define PIN_UART_TRADER_RX 18
+    # define PIN_UART_TRADER_TX 19
 
     # define PIN_SERIAL_RPI_RX 0
     # define PIN_SERIAL_RPI_TX 0
