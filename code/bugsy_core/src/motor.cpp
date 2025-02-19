@@ -1,14 +1,14 @@
-# include <sylo/types.hpp>
-
-# include "bugsy.hpp"
-# include "bugsy_core.hpp"
 # include "motors.hpp"
 
-namespace bugsy_core {
-    Movement::Movement(Direction chain_left_dir, Direction chain_right_dir, uint8_t chain_left_duty, uint8_t chain_right_duty) 
-        : chain_left_dir(chain_left_dir), chain_right_dir(chain_right_dir), chain_left_duty(chain_left_duty), chain_right_duty(chain_right_duty)
-    { }
+// External libraries
 
+// Local headers
+# include "bugsy_core.hpp"
+
+using bugsy::Movement;
+using bugsy::MoveDuration;
+
+namespace bugsy_core {
     namespace move {
         Movement move = MOVEMENT_NONE;
         uint32_t stamp = 0;

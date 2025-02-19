@@ -8,6 +8,9 @@
 
 // External libraries
 # include <Arduino.h>
+# include <bugsy/core.hpp>
+# include <bugsy/trader.hpp>
+
 # include "bugsy_core.hpp"
 
 namespace bugsy_core {
@@ -28,7 +31,9 @@ namespace bugsy_core {
         extern char parse_buffer [PARSE_BUFFER_SIZE];
 
         /// Whether or not the communication to the trader MCU has been established
-        extern bool trader_ready;
+        extern bugsy::TraderState trader_state;
+        /// Timestamp of the last state update from the trader
+        extern unsigned long trader_stamp;
         /// Whether or not the communication
         extern bool rpi_ready;
 
@@ -36,7 +41,7 @@ namespace bugsy_core {
         /// @param remotes The remotes to write the output to
         /// @param buffer The buffer to read the data from
         /// @param len The command length
-        void parse_cmd(Remote remotes, const char* buffer, size_t len);
+        void parse_cmd(bugsy::Remote remotes, const char* buffer, size_t len);
 
         // Events
             /// @brief SETUP everything concering the IO module, should be called in `setup()`
@@ -51,19 +56,19 @@ namespace bugsy_core {
             /// @param remotes The remotes to write the output to
             /// @param buffer The bytes buffer to write
             /// @param len The length of the information to write
-            void write(Remote remotes, const uint8_t* buffer, size_t len);
+            void write(bugsy::Remote remotes, const uint8_t* buffer, size_t len);
 
             /// @brief Write a null-terminated string to the serial
             /// @param remotes The remotes to write the output to
             /// @param buffer The string buffer to write
-            void write_str(Remote remotes, const char* buffer);
+            void write_str(bugsy::Remote remotes, const char* buffer);
 
             /// @brief Write an object to the given `SystemAddr`
             /// @tparam T The type of the object
             /// @param remotes The remotes to write the output to
             /// @param obj A pointer to the object to write
             template<typename T>
-            void write_obj(Remote remotes, T* obj);
+            void write_obj(bugsy::Remote remotes, T* obj);
         // 
     }
 }
