@@ -158,7 +158,7 @@ namespace bugsy_core {
         }
 
         void setup() {
-            trader_serial->begin(BUGSY_CORE_TO_TRADER_BAUD, SERIAL_8N1, PIN_UART_TRADER_RX, PIN_UART_TRADER_TX);
+            trader_serial->begin(BUGSY_UART_CORE_TO_TRADER_BAUD, SERIAL_8N1, PIN_UART_TRADER_RX, PIN_UART_TRADER_TX);
             trader_serial->setTimeout(5);
 
             rpi_serial->begin(UART_PI_BAUD);

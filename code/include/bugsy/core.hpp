@@ -17,8 +17,10 @@ namespace bugsy {
         NONE = 0x00,
         /// The controller is currently setting up
         SETUP = 0x10,
-        /// The robot is in standby mode
-        STANDBY = 0x20,
+        /// The robot is in standby mode, saving power
+        STANDBY = 0x11,
+        /// The robot is active and ready to perform movements / protocols
+        ACTIVE = 0x20,
         /// The controller is at full activity and running
         DRIVING = 0x21,
         /// The controller has stopped due to a critical error
@@ -126,6 +128,14 @@ namespace bugsy {
 
         /// @brief Communication with the Mod-slot
         MOD = 0x80
+    };
+
+    /// @brief General error codes for the core MCU
+    enum class CoreError : uint8_t {
+        /// @brief No error as occured
+        None = 0x00,
+        /// @brief No WiFi data has been set yet, while being required for this operation though
+        NoWiFiDataSet = 0x10
     };
 
     /// Movement duration in milliseconds, specifies how long a movement command will be kept alive until it runs out

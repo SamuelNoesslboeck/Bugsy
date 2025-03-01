@@ -38,6 +38,9 @@
     # define PIN_SERIAL_RPI_TX 0
 //
 
+/// The I2C address of the servo driver board
+# define BUGSY_SERVO_DRIVER_ADDR 0x40
+
 // EEPROM
 /// @brief Amount of bytes used in the EEPROM 
 # define EEPROM_SIZE 128
@@ -76,4 +79,6 @@ namespace bugsy_core {
 
     /// @brief More important (primary) sensor data, becomes invalid if the state of the trader is `DISCONNECTED`
     extern bugsy::PrimarySensorData primary_sensor_data;
+
+    
 }

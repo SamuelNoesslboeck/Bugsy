@@ -44,3 +44,8 @@ Issues with the first build:
 - The connector cable for the core fits through the slot, but just barely! So the next version should move the core a little bit more towards the center
 - For the larger next iteration should include a proper slot/connection for the raspberry pi
 - Also, a sensor rig should be integrated, so ensure proper placement of all the sensors
+
+## Improvements to electronics (2025/02/21)
+
+- Adding a PCA9685 servo driver module for a better distribution of 5V power
+- The module will be supplied with the voltage of the DC-DC-converter

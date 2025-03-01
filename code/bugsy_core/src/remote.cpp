@@ -41,11 +41,11 @@ namespace bugsy_core {
                 return (bool)(((uint8_t)_remotes) & ((uint8_t)Remote::ANY_WIFI));
             }
 
-            bool has_wifi_data() {
+            bool is_wifi_data_set() {
                 return (bool)(config::wifi_ssid[0]);
             }
 
-            void start_wifi() {
+            CoreError start_wifi() {
                 // Send msg to pi
             }   
 

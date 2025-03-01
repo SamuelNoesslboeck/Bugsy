@@ -15,7 +15,14 @@
 
 // Baud rates
 /// @brief Baud rate between the core and the trader
-# define BUGSY_CORE_TO_TRADER_BAUD 250000
+# define BUGSY_UART_CORE_TO_TRADER_BAUD 250000
 
 // Intervals
+# define BUGSY_STATE_INTERVAL 1000
+
+/// @brief Minimum time between *any form of messages* between the trader and the core until the core issues the trader as disconnected
 # define BUGSY_TRADER_MIN_UPDATES 1000
+
+# define BUGSY_PRIMARY_SENSOR_INTERVAL 500
+
+# define BUGSY_SECONDARY_SENSOR_INTERVAL 5000

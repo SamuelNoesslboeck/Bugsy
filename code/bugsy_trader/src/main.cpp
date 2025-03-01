@@ -9,7 +9,7 @@
 # include "bugsy_trader.hpp"
 
 // Static fields
-static Timer status_interval;
+static Timer state_interval, primary_interval, secondary_interval;
 
 namespace bugsy_trader {
     bugsy::TraderState state;
@@ -21,11 +21,11 @@ namespace bugsy_trader {
             while (bugsy::is_operational(bugsy_trader::core::state)) {
                 delay(100);
                 log_info(".");
-                bugsy_trader::core::state = bugsy_trader::core::set_trader_status(bugsy_trader::state);
+                bugsy_trader::core::state = bugsy_trader::core::set_trader_state(bugsy_trader::state);
             }
 
             // Send ready connection success to core
-            bugsy_trader::core::set_trader_status(bugsy_trader::state);
+            bugsy_trader::core::set_trader_state(bugsy_trader::state);
 
             log_infoln(" done!");
         }
@@ -35,17 +35,23 @@ namespace bugsy_trader {
             io::send_cmd_core(bugsy::Command::Test);
         }
 
-        bugsy::CoreState fetch_status() {
+        bugsy::CoreState get_state() {
             io::send_cmd_core(bugsy::Command::GetState);
+            // Write to parse buffers, so `CoreState::ERROR` gets parsed when no message has been received
+            io::parse_buffer[0] = (uint8_t)bugsy::CoreState::ERROR;
             return *io::recv_obj_core<bugsy::CoreState>();
         }
 
-        bugsy::CoreState set_trader_status(bugsy::TraderState state) {
-            io::send_obj_core(bugsy::Command::IsTraderReady, &state);
+        bugsy::CoreState set_trader_state(bugsy::TraderState state) {
+            io::send_obj_core(bugsy::Command::SetTraderState, &state);
+            // Write to parse buffers, so `CoreState::ERROR` gets parsed when no message has been received
+            io::parse_buffer[0] = (uint8_t)bugsy::CoreState::ERROR;
+            return *io::recv_obj_core<bugsy::CoreState>();
+
         }
 
         char* get_wifi_ssid() {
-            io::send_cmd_core(bugsy_core::Command::GetWiFiSSID);
+            io::send_cmd_core(bugsy::Command::GetWiFiSSID);
             return io::recv_obj_core<char>();
         }
     }
@@ -55,7 +61,7 @@ namespace bugsy_trader {
         char parse_buffer [PARSE_BUFFER_SIZE];
 
         void setup() {
-            core_serial->begin(BUGSY_CORE_TO_TRADER_BAUD);
+            core_serial->begin(BUGSY_UART_CORE_TO_TRADER_BAUD);
             core_serial->setTimeout(15);
         }
 
@@ -96,21 +102,29 @@ void setup() {
     log_infoln("> SETUP done!");
 
     bugsy_trader::core::reconnect();
-    status_interval.set(BUGSY_TRADER_STATUS_INTERVAL);
+    state_interval.set(BUGSY_STATE_INTERVAL);
+    primary_interval.set(BUGSY_PRIMARY_SENSOR_INTERVAL);
+    secondary_interval.set(BUGSY_SECONDARY_SENSOR_INTERVAL);
 }
 
 void loop() {
-    // log_infoln(bugsy_trader::core::get_wifi_ssid());
+    // Check up state
+    if (state_interval.has_elapsed()) {
+        bugsy_trader::core::state = bugsy_trader::core::set_trader_state(bugsy_trader::state);
 
-    delay(1000);
-
-    if (status_interval.has_elapsed()) {
-        bugsy_trader::core::state = bugsy_trader::core::fetch_status();
-
+        //
         if (!bugsy::is_operational(bugsy_trader::core::state)) {
             bugsy_trader::core::reconnect();
         }
 
-        status_interval.set();
+        state_interval.set();
+    }
+
+    if (primary_interval.has_elapsed()) {
+        primary_interval.set();
+    }
+
+    if (secondary_interval.has_elapsed()) {
+        secondary_interval.set();
     }
 }

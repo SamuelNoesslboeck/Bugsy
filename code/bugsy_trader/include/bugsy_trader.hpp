@@ -15,11 +15,15 @@
 # define BUGSY_TRADER_DEBUG_BAUD 115200
 
 // Pins
+    /// Data pin of the rotary encoder, no pull down required as it is included in the module
     # define PIN_ENCODER_DT 0
+    /// Clock pin of the rotary encoder, no pull down required as it is included in the module
     # define PIN_ENCODER_CL 0
+    /// Switch signal of the rotary encoder, no pull down required as it is included in the module
     # define PIN_ENCODER_SW 0
 
-    
+    /// Data pin for the DHT humidity & temperature sensor
+    # define PIN_DHT_SENSOR 0
 // 
 
 namespace bugsy_trader {
@@ -30,7 +34,7 @@ namespace bugsy_trader {
         /// @brief Stores the last fetched state of the core MCU
         extern bugsy::CoreState state;
 
-        /// @brief Attempts to reconnect to the core MCU
+        /// @brief Attempts to reconnect to the core MCU, blocks the process until connected
         void reconnect();
 
         // Commands
@@ -38,7 +42,7 @@ namespace bugsy_trader {
 
         bugsy::CoreState get_state();
 
-        bugsy::CoreState set_trader_status(bugsy::TraderState state);
+        bugsy::CoreState set_trader_state(bugsy::TraderState state);
 
         char* get_wifi_ssid();
     }
@@ -53,8 +57,6 @@ namespace bugsy_trader {
 
         // Events
             void setup();
-
-            void handle();
         // 
 
         void send_cmd_core(bugsy::Command cmd);
