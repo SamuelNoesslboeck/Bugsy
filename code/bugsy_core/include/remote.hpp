@@ -40,7 +40,7 @@ namespace bugsy_core {
             bool is_wifi_data_set();
 
             /// @brief Starts the WiFi remote
-            void start_wifi();
+            bugsy::CoreError start_wifi();
             
             /// @brief Stops the WiFi remote 
             void stop_wifi();

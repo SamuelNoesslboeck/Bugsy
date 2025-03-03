@@ -61,7 +61,7 @@ namespace bugsy_core {
                 case Command::Move:
                     // Check if the data has a valid size
                     if (arg_len == sizeof(Movement)) { 
-                        move::apply((Movement*)arg_bytes, config::move_dur);
+                        move::apply((Movement*)arg_bytes, configuration.move_dur);
                         bugsy_core::state = CoreState::DRIVING;
                     } else {
                         log_trace("> [Command::Move] Bad movement command with length: ");
@@ -135,18 +135,18 @@ namespace bugsy_core {
                     break;
 
                 case Command::GetWiFiSSID:
-                    io::write_str(src, config::wifi_ssid);
+                    io::write_str(src, configuration.wifi_ssid);
                     break;
 
                 case Command::SetWiFiSSID:
                     if (len == 1) {
-                        config::wifi_ssid[0] = 0;
+                        configuration.wifi_ssid[0] = 0;
                     } else {
-                        strncpy(config::wifi_ssid, buffer + 1, WIFI_BUFFER_SIZE - 1);
-                        config::wifi_ssid[WIFI_BUFFER_SIZE - 1] = 0;
+                        strncpy(configuration.wifi_ssid, buffer + 1, BUGSY_WIFI_CRED_BUFFER_SIZE - 1);
+                        configuration.wifi_ssid[BUGSY_WIFI_CRED_BUFFER_SIZE - 1] = 0;
                     }
                     log_info("> New WIFI SSID set: '");
-                    log_info(config::wifi_ssid);
+                    log_info(configuration.wifi_ssid);
                     log_infoln("'");
                     break;
 

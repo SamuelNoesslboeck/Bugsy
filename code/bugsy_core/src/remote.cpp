@@ -42,11 +42,12 @@ namespace bugsy_core {
             }
 
             bool is_wifi_data_set() {
-                return (bool)(config::wifi_ssid[0]);
+                return (bool)(configuration.wifi_ssid[0]);
             }
 
-            CoreError start_wifi() {
+            bugsy::CoreError start_wifi() {
                 // Send msg to pi
+                return bugsy::CoreError::None;
             }   
 
             void stop_wifi() {
