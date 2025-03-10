@@ -1,5 +1,3 @@
 {
-    "cmake.exportCompileCommandsFile": false,
-    "cmake.loadCompileCommands": false,
     "C_Cpp.errorSquiggles": "enabled"
 }
