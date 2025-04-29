@@ -4,6 +4,6 @@ The first subassembly and basis for the construction is formed by the chassis. A
 
 ### First iteration
 
-### Second iteration - Monobodies
+### Second iteration - Mono-Bodies
 
 ### Third iteration - Side adjustments
