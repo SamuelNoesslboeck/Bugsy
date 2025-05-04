@@ -24,6 +24,12 @@ namespace bugsy_core {
 
         /// The servo driver board
         extern Adafruit_PWMServoDriver servo_driver;
+        
+        /// Whether the robot is currently accelerating
+        extern bool accelerating;
+        /// Whether the robot is currently deccelerating
+        extern bool deccelerating;
+
 
         /// Setup all the motors and drivers required for movements
         void setup();

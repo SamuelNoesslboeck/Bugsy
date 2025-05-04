@@ -1,5 +1,5 @@
 // ######################
-// #    BUGSY - CORE    #
+// ##   BUGSY - CORE   ##
 // ######################
 //
 // Public data and structures relevant for communicating with the core MCU of the bugsy robot
@@ -17,14 +17,17 @@ namespace bugsy {
     enum class CoreState : uint8_t {
         /// No state has been set yet
         NONE = 0x00,
+
         /// The controller is currently setting up
         SETUP = 0x10,
         /// The robot is in standby mode, saving power
         STANDBY = 0x11,
+
         /// The robot is active and ready to perform movements / protocols
         ACTIVE = 0x20,
         /// The controller is at full activity and running
         DRIVING = 0x21,
+
         /// The controller has stopped due to a critical error
         ERROR = 0xF0
     };
@@ -134,7 +137,7 @@ namespace bugsy {
         // Wifi
         /// Wifi data, transfered by a TCP socket
         WIFI_TCP = 0x20,
-        /// Wifi data, transfered using MQTT
+        /// Wifi data, transfered using MQTT  
         WIFI_MQTT = 0x40,
 
         /// Any WiFi source (all when sending)
@@ -165,7 +168,8 @@ namespace bugsy {
 
         /// Current configuration of movements
         struct MoveConfig {
-
+            /// Duty acceleration per 
+            uint16_t max_acceleration;
         };
 
         /// Movement duration in milliseconds, specifies how long a movement command will be kept alive until it runs out

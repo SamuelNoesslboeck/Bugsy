@@ -14,6 +14,9 @@ namespace bugsy_core {
         uint32_t stamp = 0;
         MoveDuration duration = 0;
 
+        bool accelerating = false;
+        bool deccelerating = false;
+
         void setup() {
             // Output pins for motor controller
             pinMode(PIN_CHAIN_LEFT_FW, OUTPUT);
@@ -36,6 +39,7 @@ namespace bugsy_core {
         }
 
         void apply_to_pins(const Movement* new_move) {
+            // Selecting channel and duty for direction
             if ((bool)new_move->chain_left_dir) {
                 analogWrite(PIN_CHAIN_LEFT_BW, 0);
                 analogWrite(PIN_CHAIN_LEFT_FW, new_move->chain_left_duty);
@@ -43,7 +47,8 @@ namespace bugsy_core {
                 analogWrite(PIN_CHAIN_LEFT_FW, 0);
                 analogWrite(PIN_CHAIN_LEFT_BW, new_move->chain_left_duty);
             }
-
+            
+            // Selecting channel and duty for direction
             if ((bool)new_move->chain_right_dir) {
                 analogWrite(PIN_CHAIN_RIGHT_BW, 0);
                 analogWrite(PIN_CHAIN_RIGHT_FW, new_move->chain_right_duty);
@@ -62,11 +67,17 @@ namespace bugsy_core {
         }
 
         bool update() {
-            if (duration) {
-                if (lasts_until() < millis()) {
-                    stop();
-                } else {
-                    return true;
+            if (move_mode == bugsy::MoveMode::POWER) {
+                if (duration) {
+                    if (lasts_until() < millis()) {
+                        stop();
+                    } else {
+                        return true;
+                    }
+                }
+            } else if (move_mode == bugsy::MoveMode::EXPLORE) {
+                if (duration) {
+                    //
                 }
             }
 

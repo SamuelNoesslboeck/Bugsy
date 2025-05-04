@@ -14,10 +14,11 @@ namespace bugsy {
     };
 
     struct PrimarySensorData {
-
+        uint32_t distance_mcs_front;
+        uint32_t distance_mcs_back;
     };
 
     struct SecondarySensorData {
-
+        float temperature;
     };
 }

@@ -27,7 +27,6 @@ namespace bugsy_core {
         unsigned long trader_stamp = 0;
         bool rpi_ready = false;
 
-
         void parse_cmd(Remote src, const char* buffer, size_t len) {
             // Check if a valid command length has been provided
             if (len == 0) {
@@ -61,6 +60,7 @@ namespace bugsy_core {
                 case Command::Move:
                     // Check if the data has a valid size
                     if (arg_len == sizeof(Movement)) { 
+                        // Apply the new movement and set the State to driving
                         move::apply((Movement*)arg_bytes, configuration.move_dur);
                         bugsy_core::state = CoreState::DRIVING;
                     } else {
@@ -99,11 +99,24 @@ namespace bugsy_core {
 
                     primary_sensor_data = *(bugsy::PrimarySensorData*)arg_bytes;
                     trader_stamp = millis();
-
                     break;
 
                 case Command::GetPrimarySensorData:
                     io::write_obj(src, &primary_sensor_data);
+                    break;
+
+                case Command::PublishSecondarySensorData:
+                    if (arg_len != sizeof(bugsy::SecondarySensorData)) {
+                        log_error("> [Command::PublishSecondarySensorData] Bad sensor data size!");
+                        return;
+                    }
+
+                    secondary_sensor_data = *(bugsy::SecondarySensorData*)arg_bytes;
+                    trader_stamp = millis();
+                    break;
+
+                case Command::GetSecondarySensorData:
+                    io::write_obj(src, &secondary_sensor_data);
                     break;
 
                 case Command::SetRPiReady:
@@ -192,7 +205,7 @@ namespace bugsy_core {
             }
 
             // Set the trader to disconnected if the last update extends the duration
-            if ((millis() > (trader_stamp + BUGSY_TRADER_MIN_UPDATES)) && (trader_state != TraderState::DISCONNECTED)){
+            if ((millis() > (trader_stamp + BUGSY_TRADER_MIN_UPDATES)) && (trader_state != TraderState::DISCONNECTED)) {
                 trader_state = TraderState::DISCONNECTED;
                 log_error("> [bugsy_core::io::handle()] Trader disconnected through timeout!");
             }

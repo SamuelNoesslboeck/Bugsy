@@ -23,6 +23,7 @@ namespace bugsy_core {
         }
 
         void save() {
+            // Write out configuration to EEPROM
             EEPROM.writeBytes(EEPROM_START_ADDR, &configuration, sizeof(Configuration));
         }
     }

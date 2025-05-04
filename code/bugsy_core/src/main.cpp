@@ -19,6 +19,7 @@ using bugsy::Configuration;
 using bugsy::CoreState;
 using bugsy::MoveMode;
 using bugsy::PrimarySensorData;
+using bugsy::SecondarySensorData;
 using bugsy::Remote;
 
 // Define global events
@@ -34,6 +35,7 @@ namespace bugsy_core {
     };
 
     PrimarySensorData primary_sensor_data;
+    SecondarySensorData secondary_sensor_data;
 
     MoveMode move_mode = MoveMode::EXPLORE;
 }
@@ -100,8 +102,8 @@ void setup() {
     log_infoln("> SETUP complete!");
 
     // Set state and movement mode
-    bugsy_core::state = CoreState::STANDBY;
-    bugsy_core::move_mode = MoveMode::EXPLORE;
+    bugsy_core::state = CoreState::ACTIVE;
+    bugsy_core::move_mode = MoveMode::POWER;
 }
 
 void loop() {
@@ -111,6 +113,6 @@ void loop() {
     if (bugsy_core::move::update()) {
         bugsy_core::state = CoreState::DRIVING; 
     } else {
-        bugsy_core::state = CoreState::STANDBY;
+        bugsy_core::state = CoreState::ACTIVE;
     }
 }
