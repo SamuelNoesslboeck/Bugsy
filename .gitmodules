@@ -1,6 +1,3 @@
-[submodule "code/libs/sylo"]
-	path = code/libs/sylo
-	url = https://github.com/SamuelNoesslboeck/sylo.git
 [submodule "code/libs/Spellbox"]
 	path = code/libs/Spellbox
 	url = https://github.com/SamuelNoesslboeck/Spellbox.git

@@ -81,9 +81,13 @@ namespace bugsy_core {
                     io::write_obj(src, &state);
                     trader_stamp = millis();
 
-                    if (trader_state == bugsy::TraderState::ACTIVE) {
-                        log_infoln("> Trader active!");
+                    if (trader_state == bugsy::TraderState::CONNECTING) {
+                        log_infoln("> [Command::SetTraderState] Trader reconnected!");
                     }
+
+                    // if (trader_state == bugsy::TraderState::ACTIVE) {
+                    //     log_infoln("> Trader active!");
+                    // }
 
                     break;
 

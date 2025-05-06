@@ -29,7 +29,7 @@ namespace bugsy {
         DRIVING = 0x21,
 
         /// The controller has stopped due to a critical error
-        ERROR = 0xF0
+        ERROR = 0x80
     };
 
     /// Checks whether a state is operational or not

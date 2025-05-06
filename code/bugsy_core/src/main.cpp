@@ -70,6 +70,8 @@ void setup() {
                 (uint8_t)Remote::BLUETOOTH |                // Bluetooth being always active for configuration
                 (uint8_t)Remote::TRADER |                   // "Enabling" these MCUs will not a have any effect and is 
                 (uint8_t)Remote::RPI                        // just done for sake of clarity, as they will always be active
+
+                // Output via the debug serial leads to errors simply so it's not recommended to be enabled by default
             );
 
             // Print out configuration to trace

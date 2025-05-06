@@ -12,7 +12,7 @@ namespace bug_magic {
     namespace remote {
         bool start_bt() {
             bt_serial.begin(BUG_MAGIC_DEVICE_NAME, true);
-            return bt_serial.connect(bugsy_core::MAC);
+            return bt_serial.connect(bugsy::CORE_MAC);
         }
 
         bool setup() {

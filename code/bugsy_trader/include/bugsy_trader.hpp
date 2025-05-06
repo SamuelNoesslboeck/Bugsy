@@ -5,6 +5,8 @@
 # include <bugsy/core.hpp>
 # include <bugsy/trader.hpp>
 
+# include <Adafruit_MPU6050.h>
+
 # include <sylo/components/rotary_encoder.hpp>
 
 /// @brief Maximum size of incomming messages
@@ -22,6 +24,9 @@
     /// Switch signal of the rotary encoder, no pull down required as it is included in the module
     # define PIN_ENCODER_SW 0
 
+    # define PIN_SONAR_FRONT_ECHO 12
+    # define PIN_SONAR_FRONT_TRIG 13
+
     /// Data pin for the DHT humidity & temperature sensor
     # define PIN_DHT_SENSOR 0
 // 
@@ -29,6 +34,8 @@
 namespace bugsy_trader {
     /// @brief The curret state of the trader MCU
     extern bugsy::TraderState state;
+
+    extern bugsy::PrimarySensorData primary_sensor_data;
 
     namespace core {
         /// @brief Stores the last fetched state of the core MCU
@@ -44,11 +51,13 @@ namespace bugsy_trader {
 
         bugsy::CoreState set_trader_state(bugsy::TraderState state);
 
+        void publish_primary_sensor_data(bugsy::PrimarySensorData* data);
+
         char* get_wifi_ssid();
     }
 
     namespace device {
-        
+        extern Adafruit_MPU6050 mpu;
     }
 
     namespace io {

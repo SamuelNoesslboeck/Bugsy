@@ -6,10 +6,10 @@
 # include <BluetoothSerial.h>
 
 // Local libraries
-# include "bugsy.hpp"
+# include <bugsy/core.hpp>
 # include "spellbox.hpp"
 
-using bugsy_core::Command;
+using bugsy::Command;
 
 namespace bug_magic {
     namespace core {

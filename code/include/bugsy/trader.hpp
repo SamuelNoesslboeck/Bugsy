@@ -16,6 +16,17 @@ namespace bugsy {
     struct PrimarySensorData {
         uint32_t distance_mcs_front;
         uint32_t distance_mcs_back;
+
+        uint32_t distance_mm_front;
+        uint32_t distance_mm_back;
+
+        float accel_x;
+        float accel_y;
+        float accel_z;
+
+        // float gyro_a;
+        // float gyro_b;
+        // float gyro_c;
     };
 
     struct SecondarySensorData {
