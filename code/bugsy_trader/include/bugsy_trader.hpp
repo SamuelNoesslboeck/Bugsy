@@ -27,6 +27,9 @@
     # define PIN_SONAR_FRONT_ECHO 12
     # define PIN_SONAR_FRONT_TRIG 13
 
+    # define PIN_SONAR_BACK_TRIG 53
+    # define PIN_SONAR_BACK_ECHO 52
+
     /// Data pin for the DHT humidity & temperature sensor
     # define PIN_DHT_SENSOR 0
 // 
@@ -58,6 +61,8 @@ namespace bugsy_trader {
 
     namespace device {
         extern Adafruit_MPU6050 mpu;
+
+        void setup();
     }
 
     namespace io {

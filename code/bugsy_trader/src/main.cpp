@@ -76,6 +76,18 @@ namespace bugsy_trader {
 
     namespace device {
         Adafruit_MPU6050 mpu;
+
+        void setup() {
+            if (!bugsy_trader::device::mpu.begin()) {
+                log_errorln("> [setup] MPU Sensor unreachable!");
+            }
+        
+            pinMode(PIN_SONAR_FRONT_TRIG, OUTPUT);
+            pinMode(PIN_SONAR_FRONT_ECHO, INPUT);
+
+            pinMode(PIN_SONAR_BACK_TRIG, OUTPUT);
+            pinMode(PIN_SONAR_BACK_ECHO, INPUT);
+        }
     }
 
     namespace io {
@@ -122,14 +134,7 @@ void setup() {
     bugsy_trader::state = bugsy::TraderState::SETUP;
 
     bugsy_trader::io::setup();
-
-    // Devices
-    if (!bugsy_trader::device::mpu.begin()) {
-        log_errorln("> [setup] MPU Sensor unreachable!");
-    }
-
-    pinMode(PIN_SONAR_FRONT_TRIG, OUTPUT);
-    pinMode(PIN_SONAR_FRONT_ECHO, INPUT);
+    bugsy_trader::device::setup();
 
     log_infoln("> [setup] Done!");
 
@@ -164,15 +169,56 @@ void loop() {
 
         // Fetch new primary sensor data
         // Front sensor
-        digitalWrite(PIN_SONAR_FRONT_TRIG, LOW);
-        delayMicroseconds(2);
-        digitalWrite(PIN_SONAR_FRONT_TRIG, HIGH);
-        delayMicroseconds(10);
-        digitalWrite(PIN_SONAR_FRONT_TRIG, LOW);
+            digitalWrite(PIN_SONAR_FRONT_TRIG, LOW);
+            delayMicroseconds(2);
+            digitalWrite(PIN_SONAR_FRONT_TRIG, HIGH);
+            delayMicroseconds(10);
+            digitalWrite(PIN_SONAR_FRONT_TRIG, LOW);
 
-        // About 1.5 meters range
-        bugsy_trader::primary_sensor_data.distance_mcs_front = pulseIn(PIN_SONAR_FRONT_ECHO, HIGH, 4500); 
-        bugsy_trader::primary_sensor_data.distance_mm_front = (bugsy_trader::primary_sensor_data.distance_mcs_front * 343) / 2000;
+            // About 1.5 meters range
+            bugsy_trader::primary_sensor_data.distance_mcs_front = pulseIn(PIN_SONAR_FRONT_ECHO, HIGH, 4500); 
+            bugsy_trader::primary_sensor_data.distance_mm_front = (bugsy_trader::primary_sensor_data.distance_mcs_front * 343) / 2000;
+        // 
+
+        // Back sensor
+            digitalWrite(PIN_SONAR_BACK_TRIG, LOW);
+            delayMicroseconds(2);
+            digitalWrite(PIN_SONAR_BACK_TRIG, HIGH);
+            delayMicroseconds(10);
+            digitalWrite(PIN_SONAR_BACK_TRIG, LOW);
+
+            // About 1.5 meters range
+            bugsy_trader::primary_sensor_data.distance_mcs_back = pulseIn(PIN_SONAR_BACK_ECHO, HIGH, 4500); 
+            bugsy_trader::primary_sensor_data.distance_mm_back = (bugsy_trader::primary_sensor_data.distance_mcs_back * 343) / 2000;
+        // 
+
+        // MPU
+            sensors_event_t a, g, temp;     // Union structure
+
+            bugsy_trader::device::mpu.getEvent(&a, &g, &temp);
+            
+            bugsy_trader::primary_sensor_data.accel_x = a.acceleration.x;
+            bugsy_trader::primary_sensor_data.accel_y = a.acceleration.y;
+            bugsy_trader::primary_sensor_data.accel_z = a.acceleration.z;
+        // 
+
+        // Print out sensor data for debugging
+            log_trace("> [PrimarySensorData] {\n    sonar_front: (");
+            log_trace(bugsy_trader::primary_sensor_data.distance_mcs_front);
+            log_trace("mcs | ");
+            log_trace(bugsy_trader::primary_sensor_data.distance_mm_front);
+            log_trace("mm),\n    sonar_back: (");
+            log_trace(bugsy_trader::primary_sensor_data.distance_mcs_back);
+            log_trace("mcs | ");
+            log_trace(bugsy_trader::primary_sensor_data.distance_mm_back);
+            log_trace("mm),\n    accel: (");
+            log_trace(bugsy_trader::primary_sensor_data.accel_x);
+            log_trace("/");
+            log_trace(bugsy_trader::primary_sensor_data.accel_y);
+            log_trace("/");
+            log_trace(bugsy_trader::primary_sensor_data.accel_z);
+            log_trace(")\n}\n")
+        // 
 
         bugsy_trader::core::publish_primary_sensor_data(&bugsy_trader::primary_sensor_data);
     }
