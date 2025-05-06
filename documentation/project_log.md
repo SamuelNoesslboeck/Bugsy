@@ -41,7 +41,7 @@ Issues with the first build:
 ## Second iteration of first build (Mk0.1.1) (2025/02/19)
 
 - New parts drastically improved the assembly process, however they need to be stabilized dramatically to reduce bending when tightening up the chains.
-- The connector cable for the core fits through the slot, but just barely! So the next version should move the core a little bit more towards the center
+- The connector cable for the core fits through the slot, but just barely! So the next version should move the core a little bit more towards the centre
 - For the larger next iteration should include a proper slot/connection for the raspberry pi
 - Also, a sensor rig should be integrated, so ensure proper placement of all the sensors
 
@@ -49,3 +49,10 @@ Issues with the first build:
 
 - Adding a PCA9685 servo driver module for a better distribution of 5V power
 - The module will be supplied with the voltage of the DC-DC-converter
+
+## Second build (2025/05/03)
+
+A few issues and notes with the second build
+
+- For the trader MCU, the screw connector nubs broke way too easily. Either stabilize them more or be very careful in assembly
+- Cable management of the lower layer is still chaos :(
