@@ -1,3 +1,6 @@
+#![crate_name = "buglib"]
+#![doc = include_str!("../README.md")]
+
 use core::time::Duration;
 
 use colored::Colorize;
@@ -21,7 +24,7 @@ pub enum Command {
 /// The current state of the Bugsy
 #[derive(Clone, Copy, Debug)]
 #[repr(u8)]
-pub enum State {
+pub enum CoreState {
     /// No state has been set yet
     NONE = 0x00,
     /// The controller is currently setting up
@@ -31,10 +34,10 @@ pub enum State {
     /// The controller is at full activity and running
     DRIVING = 0x21,
     /// The controller has stopped due to a critical error
-    ERROR = 0xF0
+    ERROR = 0xA0
 }
 
-impl core::fmt::Display for State {
+impl core::fmt::Display for CoreState {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         // Prints out a colored version of the state
         match self {
@@ -52,22 +55,34 @@ impl core::fmt::Display for State {
 #[repr(u8)]
 #[allow(non_camel_case_types)]
 pub enum Remote {
+    /// Errorful `None` address, indicates that something went wrong
     NONE = 0x00,
 
+    /// Bluetooth, the main source of remote configuration
     BLUETOOTH = 0x01,
 
-    USB = 0x02,
-    TRADER = 0x04,
-    RPI = 0x08,
+    /// Lora, as a fast, reliable high-range communication method
+    LORA = 0x02,
 
-    WIFI_UDP = 0x10,
+    // Local
+    /// Direct UART connection via the USB port
+    USB = 0x04,
+    /// Direct UART connection to the Trader MCU
+    TRADER = 0x08,
+    /// Direct UART connection to the RPi 
+    RPI = 0x10,
+
+    // Wifi
+    /// Wifi data, transfered by a TCP socket
     WIFI_TCP = 0x20,
+    /// Wifi data, transfered using MQTT  
     WIFI_MQTT = 0x40,
-    WIFI_CAM = 0x80,
 
-    ANY_WIFI = 0xF0,
+    /// Any WiFi source (all when sending)
+    ANY_WIFI = 0x60,
 
-    ALL = 0xFF
+    /// Communication with the Mod-slot
+    MOD = 0x80
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -185,7 +200,7 @@ impl Movement {
         // 
 
         // Commands
-            pub fn get_state(&mut self) -> Result<State, std::io::Error> {
+            pub fn get_state(&mut self) -> Result<CoreState, std::io::Error> {
                 self.write_cmd(Command::GetState)?;
                 unsafe {
                     self.read_obj(1)

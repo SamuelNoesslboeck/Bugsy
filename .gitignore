@@ -4,12 +4,12 @@ c_cpp_properties.json
 
 # C/C++
 build
-target
 
 # Platform IO
 .pio
 
 # Rust
+target
 Cargo.lock
 
 # Electronics

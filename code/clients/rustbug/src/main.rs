@@ -15,8 +15,7 @@ use crossterm::style::Print;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType};
 use std::io::stdout;
 
-mod bugsy;
-pub use bugsy::{BugsySerial, Movement, State};
+pub use buglib::{BugsySerial, Movement, CoreState};
 
 fn bool_to_colored_text(b : bool) -> ColoredString {
     if b {
@@ -215,10 +214,10 @@ fn main() {
 
         loop {
             // Manual bugsy.get_state()
-            bugsy.write_cmd(bugsy::Command::GetState).expect("[ERROR] Error while sending the command!");
+            bugsy.write_cmd(buglib::Command::GetState).expect("[ERROR] Error while sending the command!");
             let inst = Instant::now();
 
-            let state : State = unsafe {
+            let state : CoreState = unsafe {
                 match bugsy.read_obj(1) {
                     Ok(state) => state,
                     Err(err) => {
