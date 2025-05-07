@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "clients/rustbug"
+		},
+		{
+			"path": "clients/rustbug_ui"
+		},
+		{
+			"path": "libs/buglib"
+		}
+	],
+	"settings": {}
+}

@@ -10,15 +10,77 @@ use serialport::SerialPort;
 #[repr(u8)]
 #[derive(Clone, Copy, Debug)]
 pub enum Command {
+    /// Test command for debug purposes
+    /// @return The additional bytes given
     Test = 0x00,
+
+    /// State command mainly for internal communication
+    /// @return `0x00` - The current `State` (see `bugsy_core::State`)
     GetState = 0x01,
 
+    /// Issue a new movement
+    /// @param `0x00-0x03` 4 byte `Movement` struct, will be parsed and applied directly, every sequence of bytes is valid!
     Move = 0x10,
     
-    IsTraderReady = 0x21,
-    IsRPiReady = 0x23,
+    /// Sets the current movement mode, changing fundamentally how the Bugsy behaves
+    SetMoveMode = 0x11,
+    
+    GetMoveMode = 0x12,
 
-    RemoteMode = 0x40
+    /// Returns the current movement configuration, defining acceleration etc.
+    /// @return `0x00`-sizeof(MoveConfig): The current movement configuration
+    GetMoveConfig = 0x13,
+    /// Sets the current movement configuration
+    SetMoveConfig = 0x14,
+
+
+    /// Internal command to set the stored state of the trader that will be communicated to external devices  
+    /// The function also returns the current state of the Bugsy robot
+    /// @param `0x00` The `bugsy_trader::State` to be stored in the core
+    /// @return `0x00` The current `bugsy_core::State` of the core
+    SetTraderState = 0x20,
+    /// Get the (currently in the core registered) state of the trader MCU
+    /// @return `0x00` The `bugsy_trader::State` value
+    GetTraderState = 0x21,
+
+    /// Internal command for publishing important (primary) sensor data to the core MCU
+    /// @param `0x00-sizeof(bugsy_trader::PrimarySensorData)` the data to store
+    PublishPrimarySensorData = 0x22,
+    /// Returns the primary sensor data stored in the core
+    /// @return `bugsy_trader::PrimarySensorData`
+    GetPrimarySensorData = 0x23,
+    /// Internal command for publishing less important (secondary) sensor data to the core MCU
+    PublishSecondarySensorData = 0x24,
+    GetSecondarySensorData = 0x25,
+
+    /// Internal command to signal that the RPi is ready
+    SetRPiReady = 0x28,
+    /// Get whether the raspberry pi is ready or not
+    IsRPiReady = 0x29,
+
+    /// Returns the current remote configuration
+    /// @return `0x00` - The current remote mode
+    Remotes = 0x40,
+    /// Reconfigures the remote settings made
+    /// @param 0x00 The new `Remotes`
+    RemoteConfigure = 0x41,
+
+    /// Safe the configuration to the EEPROM
+    SaveConfig = 0x80,
+
+    /// Get the current SSID for the WiFi connection
+    /// @return The WiFi SSID as null terminated string (for max len see `WIFI_BUFFER_SIZE`)
+    GetWiFiSSID = 0xA0, 
+    /// Set the current SSID for the WiFi connection
+    /// @param 0x00-? The WiFi SSID as null terminated string (for max len see `WIFI_BUFFER_SIZE`)
+    SetWiFiSSID = 0xA1,
+    
+    /// Get the current password for the WiFi connection
+    /// @return The WiFi password as null terminated string (for max len see `WIFI_BUFFER_SIZE`)
+    GetWiFiPwd = 0xA2,
+    /// Set the current password for the WiFi connection
+    /// @param 0x00-? The WiFi password as null terminated string (for max len see `WIFI_BUFFER_SIZE`)
+    SetWiFiPwd = 0xA3
 }
 
 /// The current state of the Bugsy
@@ -27,14 +89,19 @@ pub enum Command {
 pub enum CoreState {
     /// No state has been set yet
     NONE = 0x00,
+
     /// The controller is currently setting up
     SETUP = 0x10,
-    /// The robot is in standby mode
-    STANDBY = 0x20,
+    /// The robot is in standby mode, saving power
+    STANDBY = 0x11,
+
+    /// The robot is active and ready to perform movements / protocols
+    ACTIVE = 0x20,
     /// The controller is at full activity and running
     DRIVING = 0x21,
+
     /// The controller has stopped due to a critical error
-    ERROR = 0xA0
+    ERROR = 0x80
 }
 
 impl core::fmt::Display for CoreState {
@@ -44,7 +111,8 @@ impl core::fmt::Display for CoreState {
             Self::NONE => f.write_fmt(format_args!("{}", "NONE".white())),
             Self::SETUP => f.write_fmt(format_args!("{}", "SETUP".yellow())),
             Self::STANDBY => f.write_fmt(format_args!("{}", "STANDBY".bright_blue())),
-            Self::DRIVING => f.write_fmt(format_args!("{}", "RUNNING".green())),
+            Self::ACTIVE => f.write_fmt(format_args!("{}", "ACTIVE".green())),
+            Self::DRIVING => f.write_fmt(format_args!("{}", "DRIVING".blue())),
             Self::ERROR => f.write_fmt(format_args!("{}", "ERROR".red()))
         }
     }
@@ -83,6 +151,19 @@ pub enum Remote {
 
     /// Communication with the Mod-slot
     MOD = 0x80
+}
+
+#[derive(Clone, Debug)]
+pub struct PrimarySensorData {
+    pub distance_mcs_front : u32,
+    pub distance_mcs_back : u32,
+
+    pub distance_mm_front : u32,
+    pub distance_mm_back : u32,
+
+    pub accel_x : f32,
+    pub accel_y : f32,
+    pub accel_z : f32,
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -207,17 +288,19 @@ impl Movement {
                 }
             } 
 
+            /// TODO: Rework to State
             pub fn is_trader_ready(&mut self) -> Result<bool, std::io::Error> {
-                self.write_cmd(Command::IsTraderReady)?;
-                unsafe {
-                    self.read_obj(1)
-                }
+                // self.write_cmd(Command::IsTraderReady)?;
+                // unsafe {
+                //     self.read_obj(1)
+                // }
+                todo!()
             } 
 
             pub fn is_rpi_ready(&mut self) -> Result<bool, std::io::Error> {
                 self.write_cmd(Command::IsRPiReady)?;
                 unsafe {
-                    self.read_obj(1)
+                    self.read_obj(core::mem::size_of::<bool>())
                 }
             }
 
@@ -229,9 +312,16 @@ impl Movement {
             }
 
             pub fn remote_mode(&mut self) -> Result<Remote, std::io::Error> {
-                self.write_cmd(Command::RemoteMode)?;
+                self.write_cmd(Command::Remotes)?;
                 unsafe {
-                    self.read_obj(1)
+                    self.read_obj(core::mem::size_of::<Remote>())
+                }
+            }
+
+            pub fn get_primary_sensor_data(&mut self) -> Result<PrimarySensorData, std::io::Error> {
+                self.write_cmd(Command::GetPrimarySensorData)?;
+                unsafe {
+                    self.read_obj(core::mem::size_of::<PrimarySensorData>())
                 }
             }
         //

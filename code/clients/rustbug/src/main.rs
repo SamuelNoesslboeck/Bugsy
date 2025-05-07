@@ -63,6 +63,18 @@ fn main() {
                 )
         )
         .subcommand(
+            Command::new("sensors")
+                .about("Fetches sensor data, can be looped")
+                .arg(
+                    arg!([repeat] "Whether the fetching should be repeated or not")
+                    .value_parser(value_parser!(bool))
+                )
+                .arg(
+                    arg!([interval] "Interval time")
+                    .value_parser(value_parser!(u64))
+                )
+        )
+        .subcommand(
             Command::new("status")
                 .about("Prints the curret status of the bugsy")
         );
@@ -73,6 +85,10 @@ fn main() {
     let port = matches.get_one::<String>("port").expect("[ERROR] A valid serial interface has to be provided!");
 
     let mut bugsy = BugsySerial::new(port);
+
+    // Printing header
+    println!("{}", "Bugsy CMD-IO, (c) Sy 2025".bold());
+    println!("> Using {}", port.red());
 
     if let Some(_) = matches.subcommand_matches("ctrl") {
         println!("{}", "> Enabling full control ... ".bold());
@@ -184,9 +200,7 @@ fn main() {
         disable_raw_mode().unwrap();
 
         return;
-    }
-
-    if let Some(matches) = matches.subcommand_matches("move_test") {
+    } else if let Some(matches) = matches.subcommand_matches("move_test") {
         let time_ms : u64 = *matches.get_one("time").unwrap_or(&1000);
         let dur = Duration::from_millis(time_ms);
 
@@ -203,9 +217,8 @@ fn main() {
         
         println!("| > Spinning {}", "counter-clockwise".blue());
         bugsy.movement(&Movement::SPIN_CCW, dur).expect("[ERROR] Movement unsuccessful");
-    }
 
-    if let Some(matches) = matches.subcommand_matches("ping") {
+    } else if let Some(matches) = matches.subcommand_matches("ping") {
         let interval_ms : u64 = *matches.get_one("interval").unwrap_or(&1000);
         let dur = Duration::from_millis(interval_ms);
         let mut counter = 0;
@@ -240,9 +253,28 @@ fn main() {
 
             counter += 1;
         }
-    }
 
-    if let Some(_) = matches.subcommand_matches("status") {
+    } else if let Some(matches) = matches.subcommand_matches("sensors") {
+        let repeat = *matches.get_one("repeat").unwrap_or(&false);
+
+        let interval_ms : u64 = *matches.get_one("interval").unwrap_or(&500);
+        let dur = Duration::from_millis(interval_ms);
+        // let mut counter = 0;
+
+        println!("{}", "> Fetching sensor data ... ".bold());
+
+        loop {
+            let data = bugsy.get_primary_sensor_data().expect("[ERROR] Error while fetching sensor data!");
+
+            println!("{:?}", data);
+
+            if !repeat { break; }
+
+            std::thread::sleep(dur);
+            // counter += 1;
+        }
+
+    } else if let Some(_) = matches.subcommand_matches("status") {
         println!("{}", "> Bugsy - General status".bold());
         println!("| > Core status: {}", bugsy.get_state().unwrap());
         println!("| > Trader: {}", bool_to_colored_text(bugsy.is_trader_ready().unwrap()));

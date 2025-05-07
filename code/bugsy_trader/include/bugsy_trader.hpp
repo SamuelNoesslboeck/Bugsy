@@ -16,6 +16,8 @@
 /// @brief Debug baud rate of the trader MCU
 # define BUGSY_TRADER_DEBUG_BAUD 115200
 
+# define BUGSY_SONAR_TIMEOUT_MCS 20000
+
 // Pins
     /// Data pin of the rotary encoder, no pull down required as it is included in the module
     # define PIN_ENCODER_DT 0

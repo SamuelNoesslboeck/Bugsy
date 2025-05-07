@@ -176,7 +176,7 @@ void loop() {
             digitalWrite(PIN_SONAR_FRONT_TRIG, LOW);
 
             // About 1.5 meters range
-            bugsy_trader::primary_sensor_data.distance_mcs_front = pulseIn(PIN_SONAR_FRONT_ECHO, HIGH, 4500); 
+            bugsy_trader::primary_sensor_data.distance_mcs_front = pulseIn(PIN_SONAR_FRONT_ECHO, HIGH, BUGSY_SONAR_TIMEOUT_MCS); 
             bugsy_trader::primary_sensor_data.distance_mm_front = (bugsy_trader::primary_sensor_data.distance_mcs_front * 343) / 2000;
         // 
 
@@ -188,7 +188,7 @@ void loop() {
             digitalWrite(PIN_SONAR_BACK_TRIG, LOW);
 
             // About 1.5 meters range
-            bugsy_trader::primary_sensor_data.distance_mcs_back = pulseIn(PIN_SONAR_BACK_ECHO, HIGH, 4500); 
+            bugsy_trader::primary_sensor_data.distance_mcs_back = pulseIn(PIN_SONAR_BACK_ECHO, HIGH, BUGSY_SONAR_TIMEOUT_MCS); 
             bugsy_trader::primary_sensor_data.distance_mm_back = (bugsy_trader::primary_sensor_data.distance_mcs_back * 343) / 2000;
         // 
 

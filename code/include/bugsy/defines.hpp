@@ -23,7 +23,7 @@
 /// Minimum time between *any form of messages* between the trader and the core until the core issues the trader as disconnected
 # define BUGSY_TRADER_MIN_UPDATES 2000
 /// Time interval between measurements of the primary sensor data
-# define BUGSY_PRIMARY_SENSOR_INTERVAL 500
+# define BUGSY_PRIMARY_SENSOR_INTERVAL 250
 /// Time interval between measurements of the secondary sensor data
 # define BUGSY_SECONDARY_SENSOR_INTERVAL 5000
 
