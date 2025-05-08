@@ -223,15 +223,15 @@ impl Movement {
     }
 
     impl BugsySerial {
-        pub fn new<'a>(path : impl Into<std::borrow::Cow<'a, str>>) -> Self {
-            Self {
+        pub fn connect<'a>(path : impl Into<std::borrow::Cow<'a, str>>) -> Result<Self, serialport::Error> {
+            Ok(Self {
                 port: serialport::new(path, 115_200)
                     .timeout(Duration::from_millis(1000))
-                    .open().expect("Failed to open port"),
+                    .open()?,
 
                 tx_buffer: [0; 32],
                 rx_buffer: [0; 64]
-            }
+            })
         }
 
         // USB I/O

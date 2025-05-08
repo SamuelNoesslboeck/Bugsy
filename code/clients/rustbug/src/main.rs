@@ -82,9 +82,11 @@ fn main() {
 
     let matches = command.get_matches_mut();
 
-    let port = matches.get_one::<String>("port").expect("[ERROR] A valid serial interface has to be provided!");
+    let port = matches.get_one::<String>("port")
+        .expect("[ERROR] A valid serial interface has to be provided!");
 
-    let mut bugsy = BugsySerial::new(port);
+    let mut bugsy = BugsySerial::connect(port)
+        .expect("[ERROR] Error while opening the serial port");
 
     // Printing header
     println!("{}", "Bugsy CMD-IO, (c) Sy 2025".bold());
