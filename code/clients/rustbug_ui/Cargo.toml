@@ -7,4 +7,5 @@ edition = "2024"
 
 buglib = { path = "../../libs/buglib" }
 eframe = "0.31.1"
+egui_extras = { version = "0.31.1", features = ["default", "all_loaders"] }
 env_logger = "0.11.8"

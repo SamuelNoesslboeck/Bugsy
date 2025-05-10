@@ -14,42 +14,52 @@ pub use connect::*;
 fn main() -> eframe::Result {
     env_logger::init();
 
-    let serial = Rc::new(RefCell::new(None));
+    let serial_rc = Rc::new(RefCell::new(None));
 
     let connect_app_options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([1000.0, 400.0]),
+        viewport: egui::ViewportBuilder::default()
+            .with_resizable(false)
+            .with_inner_size([1000.0, 400.0]),
         ..Default::default()
     };
 
     let main_app_options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([1200.0, 800.0]),
+        viewport: egui::ViewportBuilder::default()
+            .with_inner_size([1200.0, 800.0]),
         ..Default::default()
     };
 
     eframe::run_native(
         "RustBug - Connect", 
         connect_app_options, 
-        Box::new(|_cc| Ok(Box::new(RustBugConnectApp::with_serial(serial.clone()))))
+        Box::new(|cc| {
+            egui_extras::install_image_loaders(&cc.egui_ctx);
+            Ok(Box::new(RustBugConnectApp::with_serial(serial_rc.clone())))
+        })
     )?; 
 
-    eframe::run_native(
-        "RustBug",
-        main_app_options,
-        Box::new(|_cc| Ok(Box::new(RustBugMainApp::with_serial(serial.clone()))))
-    )
+    // Only opens next window if successfully connected
+    if let Some(serial) = serial_rc.borrow_mut().take() {
+        eframe::run_native(
+            "RustBug",
+            main_app_options,
+            Box::new(|_cc| Ok(Box::new(RustBugMainApp::with_serial(serial))))
+        )?;
+    }
+
+    Ok(())
 }
 
-#[derive(Default)]
 struct RustBugMainApp {
     console: String,
-    serial : Rc<RefCell<Option<BugsySerial>>>
+    serial : BugsySerial
 }
 
 impl RustBugMainApp {
-    pub fn with_serial(serial : Rc<RefCell<Option<BugsySerial>>>) -> Self {
+    pub fn with_serial(serial : BugsySerial) -> Self {
         Self {
             serial,
-            ..Default::default()
+            console: String::new()
         }
     }    
 }
