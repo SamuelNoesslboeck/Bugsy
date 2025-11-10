@@ -1,16 +1,5 @@
-# Settings
-arduino.json
-c_cpp_properties.json
-
-# C/C++
-build
-target
-
-# Platform IO
-.pio
-
-# Rust
-Cargo.lock
+# .vscode - Local settings
+.vscode/settings.json
 
 # Electronics
 ~*
