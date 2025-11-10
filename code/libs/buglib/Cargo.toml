@@ -1,8 +1,0 @@
-[package]
-name = "buglib"
-version = "0.3.0"
-edition = "2021"
-
-[dependencies]
-colored = "3.0.0"
-serialport = "4.6.0"
